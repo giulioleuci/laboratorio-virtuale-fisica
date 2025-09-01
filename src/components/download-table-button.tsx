@@ -92,9 +92,10 @@ export const DownloadTableButton: React.FC<DownloadTableButtonProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="default">
-          <Download className="mr-2 h-4 w-4" />
-          Scarica dati
+        <Button variant="default" className="text-xs sm:text-sm">
+          <Download className="mr-1 sm:mr-2 h-4 w-4" />
+          <span className="hidden sm:inline">Scarica dati</span>
+          <span className="sm:hidden">Scarica</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>

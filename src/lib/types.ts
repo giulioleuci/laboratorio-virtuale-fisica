@@ -48,6 +48,7 @@ export type ChartDataPoint = {
     y: number;
     sigma_x?: number;
     sigma_y?: number;
+    y_fit?: number;
 };
 
 export type ChartInfo = {

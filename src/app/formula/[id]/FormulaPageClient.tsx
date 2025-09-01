@@ -179,17 +179,22 @@ export default function FormulaPageClient({ id }: { id: string }) {
     };
     
     setIsLoading(true);
-    const processed = processMeasurements(measurements, formula, modes);
     
-    try {
-      const res = await Promise.resolve(formula.calculation(processed, modes, measurements));
-      setResults(res);
-    } catch (e) {
-      console.error("Calculation failed:", e);
-      setResults({ details: { error: `Il calcolo è fallito: ${e instanceof Error ? e.message : String(e)}` } });
-    } finally {
-      setIsLoading(false);
-    }
+    // Use requestAnimationFrame + setTimeout to ensure UI updates immediately
+    requestAnimationFrame(() => {
+      setTimeout(async () => {
+        try {
+          const processed = processMeasurements(measurements, formula, modes);
+          const res = await Promise.resolve(formula.calculation(processed, modes, measurements));
+          setResults(res);
+        } catch (e) {
+          console.error("Calculation failed:", e);
+          setResults({ details: { error: `Il calcolo è fallito: ${e instanceof Error ? e.message : String(e)}` } });
+        } finally {
+          setIsLoading(false);
+        }
+      }, 10);
+    });
   }, [formula, measurements, modes]);
 
   useEffect(() => {
@@ -242,11 +247,11 @@ export default function FormulaPageClient({ id }: { id: string }) {
 
         <header className="mb-8">
             <div className="flex items-center gap-3 mb-2">
-                <CategoryIcon className="w-6 h-6 text-primary" />
-                <span className="text-primary font-semibold">{formula.category}</span>
+                <CategoryIcon className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
+                <span className="text-primary font-semibold text-sm sm:text-base">{formula.category}</span>
             </div>
-            <h1 className="text-4xl font-bold font-headline">{formula.title}</h1>
-            <p className="text-lg text-muted-foreground mt-2">{formula.description}</p>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-headline">{formula.title}</h1>
+            <p className="text-base sm:text-lg text-muted-foreground mt-2">{formula.description}</p>
         </header>
 
         <div className="space-y-8">
@@ -256,7 +261,7 @@ export default function FormulaPageClient({ id }: { id: string }) {
             </CardHeader>
             <CardContent className="space-y-6">
                 {formula.uiOptions?.switches && (
-                <div className="flex flex-wrap gap-x-8 gap-y-4 rounded-lg border bg-card/50 p-4">
+                <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:gap-x-8 sm:gap-y-4 rounded-lg border bg-card/50 p-4">
                     {formula.uiOptions.switches.map(s => {
                     const isDisabled = s.disabled ? s.disabled(modes) : false;
                     const value = isDisabled ? s.defaultValue : modes[s.id];
@@ -266,7 +271,7 @@ export default function FormulaPageClient({ id }: { id: string }) {
                         <RadioGroup
                             value={value}
                             onValueChange={(val) => handleModeChange(s.id, val)}
-                            className="flex items-center gap-4 mt-2"
+                            className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 mt-2"
                             disabled={isDisabled}
                         >
                             {s.options.map(opt => (

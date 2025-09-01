@@ -16,6 +16,7 @@ interface ImportDataButtonProps {
 export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, setData }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+    const [isProcessing, setIsProcessing] = React.useState(false);
 
     const findColumnId = (header: string): string | null => {
         const cleanHeader = header.trim().toLowerCase();
@@ -107,22 +108,39 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
         });
     };
 
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (!file) return;
-
+        if (!file) {
+            setIsProcessing(false);
+            return;
+        }
+        
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             try {
                 const data = e.target?.result;
                 if (!data) throw new Error("Failed to read file.");
 
-                const workbook = XLSX.read(data, { type: 'binary' });
-                const sheetName = workbook.SheetNames[0];
-                const worksheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-                
-                processData(jsonData as any[][]);
+                // Use setTimeout to make processing async and show loading state
+                setTimeout(async () => {
+                    try {
+                        const workbook = XLSX.read(data, { type: 'binary' });
+                        const sheetName = workbook.SheetNames[0];
+                        const worksheet = workbook.Sheets[sheetName];
+                        const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        
+                        processData(jsonData as any[][]);
+                    } catch (error) {
+                        console.error("Error processing file:", error);
+                        toast({
+                            variant: 'destructive',
+                            title: 'Errore di importazione',
+                            description: `Non è stato possibile leggere il file. Assicurati che sia un formato valido.`,
+                        });
+                    } finally {
+                        setIsProcessing(false);
+                    }
+                }, 50);
             } catch (error) {
                 console.error("Error processing file:", error);
                 toast({
@@ -130,6 +148,7 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
                     title: 'Errore di importazione',
                     description: `Non è stato possibile leggere il file. Assicurati che sia un formato valido.`,
                 });
+                setIsProcessing(false);
             }
         };
         reader.onerror = () => {
@@ -138,6 +157,7 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
                 title: 'Errore di lettura',
                 description: 'Impossibile leggere il file selezionato.',
             });
+            setIsProcessing(false);
         }
         reader.readAsBinaryString(file);
         
@@ -148,6 +168,8 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
     };
 
     const handleButtonClick = () => {
+        // Set loading state immediately when button is clicked
+        setIsProcessing(true);
         fileInputRef.current?.click();
     };
 
@@ -160,9 +182,14 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
                 className="hidden"
                 accept=".xlsx, .ods, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.oasis.opendocument.spreadsheet"
             />
-            <Button onClick={handleButtonClick} variant="default">
-                <Upload className="mr-2 h-4 w-4" />
-                Importa dati
+            <Button onClick={handleButtonClick} variant="default" className="text-xs sm:text-sm" disabled={isProcessing}>
+                {isProcessing ? (
+                    <div className="mr-1 sm:mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-foreground" />
+                ) : (
+                    <Upload className="mr-1 sm:mr-2 h-4 w-4" />
+                )}
+                <span className="hidden sm:inline">{isProcessing ? 'Elaborazione...' : 'Importa dati'}</span>
+                <span className="sm:hidden">{isProcessing ? 'Elaborazione...' : 'Importa'}</span>
             </Button>
         </>
     );

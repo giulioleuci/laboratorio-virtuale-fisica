@@ -14,13 +14,17 @@ const getHookesLawChartInfo = (
     const chartData = data.map(p => {
         let xValue: number, sigmaX: number, yValue: number, sigmaY: number;
 
+        // Calculate elongation: ΔL = L_finale - L_riposo
+        const deltaL_cm = (p.l_finale ?? 0) - (p.l_riposo ?? 0);
+        const sigma_deltaL_cm = Math.sqrt(((p.sigma_l_finale ?? 0) ** 2) + ((p.sigma_l_riposo ?? 0) ** 2));
+
         // X-axis transformation
         if (xAxisUnit === 'm') {
-            xValue = (p.l ?? 0) / 100;
-            sigmaX = (p.sigma_l ?? 0) / 100;
+            xValue = deltaL_cm / 100;
+            sigmaX = sigma_deltaL_cm / 100;
         } else { // cm
-            xValue = p.l ?? 0;
-            sigmaX = p.sigma_l ?? 0;
+            xValue = deltaL_cm;
+            sigmaX = sigma_deltaL_cm;
         }
 
         // Y-axis transformation

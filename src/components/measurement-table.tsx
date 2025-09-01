@@ -222,26 +222,29 @@ export function MeasurementTable({ columns, data, setData, onGenerateSampleData,
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">
             <Button onClick={addRow} className="font-bold">
                 <PlusCircle className="mr-2 h-4 w-4" />
-                Aggiungi riga
+                <span className="hidden xs:inline">Aggiungi riga</span>
+                <span className="xs:hidden">Aggiungi</span>
             </Button>
         </div>
-        <div className="flex items-center gap-2">
-            <Button onClick={onGenerateSampleData} variant="outline">
-              <TestTube className="mr-2 h-4 w-4" />
-              Crea dati di esempio
+        <div className="flex flex-wrap items-center gap-2">
+            <Button onClick={onGenerateSampleData} variant="outline" className="text-xs sm:text-sm">
+              <TestTube className="mr-1 sm:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Crea dati di esempio</span>
+              <span className="sm:hidden">Esempio</span>
             </Button>
             <ImportDataButton columns={columns} setData={setData} />
             {data.length > 0 &&
                 <DownloadTableButton data={data} columns={columns} experimentName={experimentName} />
             }
             {data.length > 0 &&
-              <Button onClick={clearTable} variant="destructive" >
-                <XCircle className="mr-2 h-4 w-4" />
-                Pulisci tabella
+              <Button onClick={clearTable} variant="destructive" className="text-xs sm:text-sm">
+                <XCircle className="mr-1 sm:mr-2 h-4 w-4" />
+                <span className="hidden sm:inline">Pulisci tabella</span>
+                <span className="sm:hidden">Pulisci</span>
               </Button>
             }
         </div>

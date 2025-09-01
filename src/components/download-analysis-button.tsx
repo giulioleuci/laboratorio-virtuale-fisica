@@ -99,17 +99,34 @@ export const DownloadAnalysisButton: React.FC<DownloadAnalysisButtonProps> = ({
   formatValue
 }) => {
   const { settings } = useSettings();
+  const [isGenerating, setIsGenerating] = React.useState(false);
   
-  const handleDownload = () => {
-    const content = generateMarkdownContent(results, formula, formatValue, settings.precisionMode);
-    const filename = generateDownloadFilename('ANALISI', experimentName);
-    downloadFile(content, `${filename}.md`, 'text/markdown;charset=utf-8;');
+  const handleDownload = async () => {
+    setIsGenerating(true);
+    
+    // Use requestAnimationFrame to ensure UI updates before heavy computation
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        try {
+          const content = generateMarkdownContent(results, formula, formatValue, settings.precisionMode);
+          const filename = generateDownloadFilename('ANALISI', experimentName);
+          downloadFile(content, `${filename}.md`, 'text/markdown;charset=utf-8;');
+        } finally {
+          setIsGenerating(false);
+        }
+      }, 10);
+    });
   };
 
   return (
-    <Button onClick={handleDownload} variant="default">
-      <Download className="mr-2 h-4 w-4" />
-      Scarica analisi
+    <Button onClick={handleDownload} variant="default" className="text-xs sm:text-sm" disabled={isGenerating}>
+      {isGenerating ? (
+        <div className="mr-1 sm:mr-2 h-4 w-4 animate-spin rounded-full border-2 border-background border-t-foreground" />
+      ) : (
+        <Download className="mr-1 sm:mr-2 h-4 w-4" />
+      )}
+      <span className="hidden sm:inline">{isGenerating ? 'Generazione...' : 'Scarica analisi'}</span>
+      <span className="sm:hidden">{isGenerating ? 'Generazione...' : 'Analisi'}</span>
     </Button>
   );
 };

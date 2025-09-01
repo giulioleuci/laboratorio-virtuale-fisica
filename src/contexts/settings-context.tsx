@@ -50,26 +50,32 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
 
   // Load settings from localStorage on the client side after mount
   useEffect(() => {
-    try {
-      const item = window.localStorage.getItem('app-settings');
-      if (item) {
-        const savedSettings = JSON.parse(item);
-        const mergedSettings = {
-          ...defaultSettings,
-          ...savedSettings,
-          categoryColors: {
-            ...defaultCategoryColors,
-            ...(savedSettings.categoryColors || {}),
-          }
-        };
-        setSettings(mergedSettings);
+    // Set loading immediately to show skeleton faster
+    const loadSettings = async () => {
+      try {
+        const item = window.localStorage.getItem('app-settings');
+        if (item) {
+          const savedSettings = JSON.parse(item);
+          const mergedSettings = {
+            ...defaultSettings,
+            ...savedSettings,
+            categoryColors: {
+              ...defaultCategoryColors,
+              ...(savedSettings.categoryColors || {}),
+            }
+          };
+          setSettings(mergedSettings);
+        }
+      } catch (error) {
+        console.error("Failed to parse settings from localStorage", error);
+        setSettings(defaultSettings);
+      } finally {
+        setIsLoaded(true);
       }
-    } catch (error) {
-      console.error("Failed to parse settings from localStorage", error);
-      setSettings(defaultSettings);
-    } finally {
-      setIsLoaded(true);
-    }
+    };
+    
+    // Use setTimeout to make loading async and show skeleton immediately
+    setTimeout(loadSettings, 0);
   }, []);
 
   // Save settings to localStorage whenever they change

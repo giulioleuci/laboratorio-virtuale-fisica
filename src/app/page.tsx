@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Formula, FormulaCategory } from '@/lib/types';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSettings } from '@/contexts/settings-context';
 import { getCategoryIcon, getFormulaIcon, hslToHex } from '@/lib/utils';
 import { DynamicThemeProvider } from '@/components/dynamic-theme-provider';
@@ -70,14 +70,16 @@ export default function HomePage() {
     "Fisica Moderna"
   ];
 
-  const groupedFormulas = formulas.reduce((acc, formula) => {
-    const category = formula.category;
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(formula);
-    return acc;
-  }, {} as Record<FormulaCategory, Formula[]>);
+  const groupedFormulas = useMemo(() => {
+    return formulas.reduce((acc, formula) => {
+      const category = formula.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(formula);
+      return acc;
+    }, {} as Record<FormulaCategory, Formula[]>);
+  }, []);
   
   if (!isLoaded) {
     return <HomePageSkeleton />;
@@ -87,10 +89,10 @@ export default function HomePage() {
     <DynamicThemeProvider>
       <div className="container mx-auto py-8">
         <header className="text-center mb-16 relative">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl lg:text-7xl font-headline">
+          <h1 className="text-3xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl font-headline">
             Laboratorio Virtuale di Fisica
           </h1>
-          <p className="mt-6 text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="mt-4 text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto px-4">
             Esplora, misura e analizza. Inizia subito la tua avventura scegliendo un esperimento!
           </p>
         </header>
@@ -113,7 +115,7 @@ export default function HomePage() {
                   <CategoryIcon className="w-8 h-8" />
                   {category}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                   {categoryFormulas.map((formula) => {
                      const FormulaIcon = getFormulaIcon(formula.id);
                      return (
@@ -162,10 +164,10 @@ export default function HomePage() {
           })}
         </div>
         
-        <div className="fixed bottom-8 right-8">
-            <Button asChild variant="secondary" size="icon" className="h-14 w-14 rounded-full shadow-lg hover:scale-110 transition-transform duration-200">
+        <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50">
+            <Button asChild variant="secondary" size="icon" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full shadow-lg hover:scale-110 transition-transform duration-200">
               <Link href="/settings">
-                <Cog className="h-7 w-7" />
+                <Cog className="h-6 w-6 sm:h-7 sm:w-7" />
                 <span className="sr-only">Impostazioni</span>
               </Link>
             </Button>

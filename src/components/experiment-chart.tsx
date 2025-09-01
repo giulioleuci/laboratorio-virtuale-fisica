@@ -198,7 +198,7 @@ export function ExperimentChart({ data: initialData, xLabel: initialXLabel, yLab
             
         return baseData.map(p => ({
             ...p,
-            y_fit: currentFit ? currentFit.slope * p.x + currentFit.intercept : undefined,
+            y_fit: p.y_fit !== undefined ? p.y_fit : (currentFit ? currentFit.slope * p.x + currentFit.intercept : undefined),
             size: chartState.pointSize,
         }));
     }, [initialData, chartState.swapped, currentFit, chartState.pointSize]);

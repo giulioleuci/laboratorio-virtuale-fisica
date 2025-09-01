@@ -34,7 +34,7 @@ export default function RootLayout({
           <ThemeProvider>
             <GlobalLoadingProvider>
               <main className="min-h-screen flex flex-col items-center">
-                <div className="w-full max-w-7xl p-4 md:p-8">{children}</div>
+                <div className="w-full max-w-7xl p-4 sm:p-6 md:p-8">{children}</div>
               </main>
             </GlobalLoadingProvider>
             <Toaster />
