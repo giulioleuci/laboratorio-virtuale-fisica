@@ -2,6 +2,8 @@
 
 Un semplice laboratorio didattico di fisica per l'analisi degli errori.
 
+Il laboratorio è accessibile gratuitamente su Github Pages: https://giulioleuci.github.io/laboratorio-virtuale-fisica/
+
 Un'applicazione web costruita con **Next.js** che permette di simulare esperimenti di fisica per la scuola, completa di analisi degli errori, grafici e tabelle. L'idea è nata per dare a docenti e studenti, specialmente del primo biennio del licee scientifico, la possibilità di fare esperienza pratica anche quando il tempo a disposizione è limitato.
 
 -----
