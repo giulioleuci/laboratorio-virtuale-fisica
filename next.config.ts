@@ -1,11 +1,16 @@
 import type {NextConfig} from 'next';
 
+// Conditional config for GitHub Pages vs local development
+const isGitHubPages = process.env.NODE_ENV === 'production';
+
 const nextConfig: NextConfig = {
   /* config options here */
   output: 'export',
-  // Base path for GitHub Pages project site
-  basePath: '/laboratorio-virtuale-fisica',
-  assetPrefix: '/laboratorio-virtuale-fisica/',
+  // Base path only for GitHub Pages project site
+  ...(isGitHubPages && {
+    basePath: '/laboratorio-virtuale-fisica',
+    assetPrefix: '/laboratorio-virtuale-fisica/',
+  }),
   // Safer routing on static hosts
   trailingSlash: true,
   typescript: {
