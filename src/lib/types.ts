@@ -41,7 +41,7 @@ export type Partials = {
   [key: string]: (vars: { [key: string]: number }) => number;
 };
 
-export type FormulaCategory = "Esperienze introduttive" | "Statica" | "Cinematica" | "Dinamica" | "Fluidi" | "Calorimetria" | "Termodinamica" | "Ottica" | "Elettricità" | "Magnetismo" | "Fisica Moderna";
+export type FormulaCategory = "Strumenti" | "Esperienze introduttive" | "Statica" | "Cinematica" | "Dinamica" | "Fluidi" | "Calorimetria" | "Termodinamica" | "Ottica" | "Elettricità" | "Magnetismo" | "Fisica Moderna";
 
 export type ChartDataPoint = {
     x: number;

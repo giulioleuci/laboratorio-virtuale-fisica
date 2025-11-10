@@ -1,5 +1,6 @@
 
-import { multiply, inv, transpose, Matrix, matrix, subtract, mean as mathMean, std, sum } from 'mathjs';
+import { multiply, inv, transpose, Matrix, matrix, mean as mathMean, std, sum } from 'mathjs';
+import { levenbergMarquardt } from 'ml-levenberg-marquardt';
 
 export function mean(values: number[]): number {
   if (values.length === 0) return 0;
@@ -66,14 +67,12 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
   if (forceInterceptZero) {
     let sum_xy_w = 0;
     let sum_x2_w = 0;
-    let sum_w = 0;
     
     const weights = sigma_y ? sigma_y.map(s => s && s > 0 ? 1 / (s*s) : 1) : Array(n).fill(1);
     
     for (let i = 0; i < n; i++) {
         sum_xy_w += weights[i] * x[i] * y[i];
         sum_x2_w += weights[i] * x[i] * x[i];
-        sum_w += weights[i];
     }
 
     if (sum_x2_w === 0) return null;
@@ -175,3 +174,59 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
 }
 
 export const G_CONST = 9.80665;
+
+export interface ExponentialRegressionResult {
+  a: number;
+  b: number;
+  sigma_a: number;
+  sigma_b: number;
+  R2: number;
+}
+
+export function exponentialRegression(x: number[], y: number[], sigma_y: (number | null | undefined)[] | null = null): ExponentialRegressionResult | null {
+  const n = x.length;
+  if (n < 2) return null;
+
+  const y_log = y.map(yi => Math.log(yi));
+  const sigma_y_log = sigma_y ? sigma_y.map((s, i) => s ? s / y[i] : null) : null;
+
+  const linearFit = linearRegression(x, y_log, sigma_y_log);
+  if (!linearFit) return null;
+
+  const a = Math.exp(linearFit.intercept);
+  const b = linearFit.slope;
+  const sigma_a = a * linearFit.sigma_intercept;
+  const sigma_b = linearFit.sigma_slope;
+  const R2 = linearFit.R2;
+
+  return { a, b, sigma_a, sigma_b, R2 };
+}
+
+export interface RationalRegressionResult {
+  coeffs: number[];
+  R2: number;
+}
+
+export function rationalRegression(x: number[], y: number[]): RationalRegressionResult | null {
+  const n = x.length;
+  if (n < 4) return null;
+
+  const fn = ([a, b, c, d]: number[]) => (t: number) => (a * t + b) / (c * t + d);
+  const initialValues = [1, 1, 1, 1];
+  const data = { x, y };
+
+  try {
+    const result = levenbergMarquardt(data, fn, { initialValues });
+    const coeffs = result.parameterValues;
+    const y_pred = x.map(fn(coeffs));
+    const y_mean = mean(y);
+    const ss_tot = sum(y.map((yi) => (yi - y_mean) ** 2));
+    const ss_res = sum(y.map((yi, i) => (yi - y_pred[i]) ** 2));
+    const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
+
+    return { coeffs, R2 };
+  } catch (e) {
+    console.error("Rational regression failed:", e);
+    return null;
+  }
+}
