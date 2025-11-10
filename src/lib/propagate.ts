@@ -1,3 +1,4 @@
+import { derivative, parse } from 'mathjs';
 import type { Partials } from './types';
 
 export function propagateError(
@@ -16,4 +17,29 @@ export function propagateError(
     }
   }
   return Math.sqrt(variance);
+}
+
+export function calculateAndPropagate(
+  formula: string,
+  variables: { [key: string]: { value: number; sigma: number } }
+): { value: number; sigma: number } | null {
+  try {
+    const node = parse(formula);
+    const values = Object.entries(variables).reduce((acc, [k, v]) => ({ ...acc, [k]: v.value }), {});
+    const sigmas = Object.entries(variables).reduce((acc, [k, v]) => ({ ...acc, [k]: v.sigma }), {});
+
+    const value = node.evaluate(values);
+
+    const partials: Partials = {};
+    for (const name in variables) {
+      partials[name] = (scope) => derivative(node, name).evaluate(scope);
+    }
+
+    const sigma = propagateError(partials, values, sigmas);
+
+    return { value, sigma };
+  } catch (error) {
+    console.error("Error in calculation and propagation:", error);
+    return null;
+  }
 }

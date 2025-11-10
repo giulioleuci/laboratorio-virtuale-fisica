@@ -1,9 +1,17 @@
+
 import { formulas } from "@/lib/formulas";
 import FormulaPageClient from "./FormulaPageClient";
+import { Metadata } from "next";
 
-// Pre-render all formula pages for static export (GitHub Pages)
 export function generateStaticParams() {
   return formulas.map((f) => ({ id: f.id }));
+}
+
+export function generateMetadata({ params }: { params: { id: string } }): Metadata {
+  const formula = formulas.find((f) => f.id === params.id);
+  return {
+    title: formula ? formula.title : "Laboratorio di Fisica",
+  };
 }
 
 export default function Page({ params }: { params: { id: string | string[] } }) {

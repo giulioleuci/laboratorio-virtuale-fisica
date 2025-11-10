@@ -34,6 +34,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const categoryIcons: Record<FormulaCategory, React.ElementType> = {
+  "Strumenti": Calculator,
   "Esperienze introduttive": BookOpen,
   "Statica": Scale,
   "Cinematica": Gauge,
@@ -50,6 +51,10 @@ export const categoryIcons: Record<FormulaCategory, React.ElementType> = {
 // All icons will be rendered with consistent 24x24 dimensions via CSS classes
 
 export const formulaIcons: Record<string, React.ElementType> = {
+  // Strumenti
+  'curve-fit': TrendingUp,
+  'error-propagation': FaCalculator,
+
   // Statica - Using different libraries for variety
   'density-measurement': FaFlask,           // Font Awesome
   'second-kind-lever': FaBalanceScale,     // Font Awesome

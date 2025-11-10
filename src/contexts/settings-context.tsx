@@ -22,6 +22,7 @@ interface SettingsContextType {
 }
 
 const defaultCategoryColors: Record<FormulaCategory, string> = {
+  "Strumenti": "270 60% 60%",       // A nice, welcoming violet
   "Esperienze introduttive": "210 70% 55%", // Blue
   "Statica": "120 40% 45%",       // Green
   "Cinematica": "30 80% 55%",     // Orange

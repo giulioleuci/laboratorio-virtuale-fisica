@@ -18,9 +18,13 @@ import { densityMeasurementFormula } from '@/app/experiments/density-measurement
 import { earthMagneticFieldFormula } from '@/app/experiments/earth-magnetic-field/config';
 import { youngsDoubleSlitFormula } from '@/app/experiments/youngs-double-slit/config';
 import { diffractionGratingFormula } from '@/app/experiments/diffraction-grating/config';
+import { curveFitFormula } from '@/app/tools/curve-fit/config';
+import { errorPropagationFormula } from '@/app/tools/error-propagation/config';
 
 
 export const formulas: Formula[] = [
+    errorPropagationFormula,
+    curveFitFormula,
     densityMeasurementFormula,
     secondKindLeverFormula,
     pendulumFormula,
@@ -42,6 +46,7 @@ export const formulas: Formula[] = [
 ];
 
 export const CATEGORIES: FormulaCategory[] = [
+    "Strumenti",
     "Esperienze introduttive",
     "Statica",
     "Cinematica",
