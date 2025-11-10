@@ -20,9 +20,15 @@ import { youngsDoubleSlitFormula } from '@/app/experiments/youngs-double-slit/co
 import { diffractionGratingFormula } from '@/app/experiments/diffraction-grating/config';
 import { curveFitFormula } from '@/app/tools/curve-fit/config';
 import { errorPropagationFormula } from '@/app/tools/error-propagation/config';
+import { uncertaintyMeasurementFormula } from '@/app/tools/uncertainty-measurement/config';
+import { absoluteRelativeErrorsFormula } from '@/app/tools/absolute-relative-errors/config';
+import { compatibilityEvaluationFormula } from '@/app/tools/compatibility-evaluation/config';
 
 
 export const formulas: Formula[] = [
+    compatibilityEvaluationFormula,
+    absoluteRelativeErrorsFormula,
+    uncertaintyMeasurementFormula,
     errorPropagationFormula,
     curveFitFormula,
     densityMeasurementFormula,
