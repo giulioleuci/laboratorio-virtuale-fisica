@@ -160,7 +160,7 @@ export const densityMeasurementFormula: Formula = {
         getFixtureKey: (modes: ModeState) => `density-measurement-${modes.calculation_method}`,
         chart: {
             isSupported: (modes, data) => data.length >= 2 && modes.calculation_method === 'fit',
-            getInfo: (data, results, modes) => {
+            getInfo: (data, results, chartCustomState, modes) => {
                 const processedData = data.map(row => {
                     if (modes.volume_measurement_method === 'direct') {
                         return { ...row };

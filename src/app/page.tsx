@@ -57,7 +57,6 @@ export default function HomePage() {
   const { settings, isLoaded } = useSettings();
 
   const categories: FormulaCategory[] = [
-    "Strumenti",
     "Esperienze introduttive",
     "Statica",
     "Cinematica",
@@ -68,7 +67,8 @@ export default function HomePage() {
     "Ottica",
     "Elettricità",
     "Magnetismo",
-    "Fisica Moderna"
+    "Fisica Moderna",
+    "Strumenti"
   ];
 
   const groupedFormulas = useMemo(() => {

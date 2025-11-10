@@ -18,6 +18,7 @@ import { densityMeasurementFixtures } from "@/app/experiments/density-measuremen
 import { earthMagneticFieldFixtures } from "@/app/experiments/earth-magnetic-field/fixtures";
 import { youngsDoubleSlitFixtures } from "@/app/experiments/youngs-double-slit/fixtures";
 import { diffractionGratingFixtures } from "@/app/experiments/diffraction-grating/fixtures";
+import { curveFitFixtures } from "@/app/tools/curve-fit/fixtures";
 
 const allFixtures: { [key: string]: MeasurementRow[] } = {
     ...pendulumFixtures,
@@ -38,6 +39,7 @@ const allFixtures: { [key: string]: MeasurementRow[] } = {
     ...earthMagneticFieldFixtures,
     ...youngsDoubleSlitFixtures,
     ...diffractionGratingFixtures,
+    ...curveFitFixtures,
 };
 
 export function getSampleData(formula: Formula, modes: ModeState): MeasurementRow[] | undefined {
