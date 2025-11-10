@@ -119,7 +119,7 @@ export default function HomePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                   {categoryFormulas.map((formula) => {
                      const FormulaIcon = getFormulaIcon(formula.id);
-                     const href = formula.category === 'Strumenti' ? `/tools/${formula.id}` : `/formula/${formula.id}`;
+                     const href = `/formula/${formula.id}`;
                      return (
                         <Link href={href} key={formula.id} passHref>
                           <Card 

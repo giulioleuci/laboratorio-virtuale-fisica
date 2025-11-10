@@ -71,14 +71,12 @@ export const compatibilityEvaluationFormula: Formula = {
     uiOptions: {
         chart: {
             isSupported: (modes, data, results) => !!results?.Compatibilità,
-            getInfo: (data: MeasurementRow[]) => {
-
-                const chartData = data.map((row, i) => ({
-                    x: i === 0 ? row.x1 : row.x2,
-                    y: i + 1,
-                    sigma_x: i === 0 ? row.sigma_x1 : row.sigma_x2,
-                    sigma_y: 0,
-                }));
+            getInfo: (data: MeasurementRow[], results) => {
+                const chartData = data.map((row, i) => {
+                    const x = processedInputs[`x${i + 1}`]?.value ?? 0;
+                    const sigma_x = processedInputs[`sigma_x${i + 1}`]?.value ?? 0;
+                    return { x, y: i + 1, sigma_x, sigma_y: 0 };
+                });
 
                 return {
                     data: chartData,
