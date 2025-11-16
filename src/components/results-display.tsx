@@ -146,14 +146,16 @@ const CustomCompatibilityEvaluationRenderer = ({ results, formatValue }: { resul
 const CustomUncertaintyMeasurementRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
   const mediaPonderata = results["Media ponderata"];
   const deviazioneStandard = results["Deviazione standard"];
+  const erroreStandard = results["Errore standard della media"];
   const semidispersione = results["Semidispersione massima"];
 
-  if (!mediaPonderata && !deviazioneStandard && !semidispersione) return null;
+  if (!mediaPonderata && !deviazioneStandard && !erroreStandard && !semidispersione) return null;
 
   return (
     <div className="space-y-4">
       {mediaPonderata && <ResultRow htmlLabel="Media ponderata (x̄)" value={formatValue(mediaPonderata.value, mediaPonderata.sigma)} unit={mediaPonderata.unit || ''} />}
       {deviazioneStandard && <ResultRow htmlLabel="Deviazione standard (σ)" value={formatValue(deviazioneStandard.value, deviazioneStandard.sigma)} unit={deviazioneStandard.unit || ''} />}
+      {erroreStandard && <ResultRow htmlLabel="Errore standard della media (σ<sub>x̄</sub>)" value={formatValue(erroreStandard.value, erroreStandard.sigma)} unit={erroreStandard.unit || ''} />}
       {semidispersione && <ResultRow htmlLabel="Semidispersione massima (Δ/2)" value={formatValue(semidispersione.value, semidispersione.sigma)} unit={semidispersione.unit || ''} />}
     </div>
   );
@@ -191,7 +193,9 @@ const VariableProcessingRenderer = ({ details, formatValue }: { details: any, fo
             {detailEntries.map(([key, detail]: [string, any]) => (
                 <div key={key} className="flex justify-between items-center">
                     <span>Variabile <strong>{key}</strong>: {formatValue(detail.mean, detail.sigma)}</span>
-                    <span className="flex items-center gap-1">{detail.method} </span>
+                    <span className="flex items-center gap-1">
+                        {detail.method === "Media semplice" ? "Media semplice (σ con errore standard)" : detail.method}
+                    </span>
                 </div>
             ))}
             </div>
