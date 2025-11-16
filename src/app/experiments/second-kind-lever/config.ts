@@ -127,7 +127,8 @@ export const secondKindLeverFormula: Formula = {
                 ],
                 defaultValue: 'force'
             }
-        ]
+        ],
+        getFixtureKey: (modes: ModeState) => `second-kind-lever-${modes.measurement_type}`
     },
     customResultRenderer: true,
 };
