@@ -78,11 +78,13 @@ const CustomKirchhoffsCurrentLawRenderer = ({ results, formatValue }: { results:
 const CustomSecondKindLeverRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
   if (!results.M_motore || !results.M_resistente) return null;
   const { M_motore, M_resistente } = results;
-  
+  const differenza = results["Differenza |Mₘ - Mᵣ|"];
+
   return (
     <div className="space-y-4">
       <ResultRow htmlLabel="Momento motore (Mₘ)" value={formatValue(M_motore.value, M_motore.sigma)} unit="N·m" />
       <ResultRow htmlLabel="Momento resistente (Mᵣ)" value={formatValue(M_resistente.value, M_resistente.sigma)} unit="N·m" />
+      {differenza && <ResultRow htmlLabel="Differenza |Mₘ - Mᵣ|" value={formatValue(differenza.value, differenza.sigma)} unit="N·m" />}
     </div>
   );
 };
@@ -93,13 +95,68 @@ const CustomOpticsResultRenderer = ({ results, formatValue, formula }: { results
     const sigma_nm = results.sigma * 1e9;
     return (
          <div className="space-y-4">
-            <ResultRow 
+            <ResultRow
                 htmlLabel={`${formula.result.label || 'Valore Finale'}`}
                 value={formatValue(value_nm, sigma_nm)}
                 unit={formula.result.unit}
             />
          </div>
     );
+};
+
+const CustomAbsoluteRelativeErrorsRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+  const erroreAssoluto = results["Errore assoluto"];
+  const erroreRelativo = results["Errore relativo"];
+  const errorePercentuale = results["Errore percentuale"];
+
+  if (!erroreAssoluto && !erroreRelativo && !errorePercentuale) return null;
+
+  return (
+    <div className="space-y-4">
+      {erroreAssoluto && <ResultRow htmlLabel="Errore assoluto (σₓ)" value={formatValue(erroreAssoluto.value, erroreAssoluto.sigma)} unit={erroreAssoluto.unit || ''} />}
+      {erroreRelativo && <ResultRow htmlLabel="Errore relativo (σₓ/x)" value={formatValue(erroreRelativo.value, erroreRelativo.sigma)} unit={erroreRelativo.unit || ''} />}
+      {errorePercentuale && <ResultRow htmlLabel="Errore percentuale" value={formatValue(errorePercentuale.value, errorePercentuale.sigma)} unit={errorePercentuale.unit || '%'} />}
+    </div>
+  );
+};
+
+const CustomCompatibilityEvaluationRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+  const differenza = results["Differenza |x₁ - x₂|"];
+  const compatibilita = results["Compatibilità"];
+  const esito = results["Esito"];
+
+  if (!differenza && !compatibilita) return null;
+
+  return (
+    <div className="space-y-4">
+      {differenza && <ResultRow htmlLabel="Differenza |x₁ - x₂|" value={formatValue(differenza.value, differenza.sigma)} unit={differenza.unit || ''} />}
+      {compatibilita && <ResultRow htmlLabel="Compatibilità" value={formatValue(compatibilita.value, compatibilita.sigma)} unit={compatibilita.unit || 'σ'} />}
+      {esito && (
+        <div className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
+          <span className="text-muted-foreground">Esito</span>
+          <span className={`font-mono text-lg font-semibold ${esito.value === "Compatibili" ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
+            {esito.value}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const CustomUncertaintyMeasurementRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+  const mediaPonderata = results["Media ponderata"];
+  const deviazioneStandard = results["Deviazione standard"];
+  const semidispersione = results["Semidispersione massima"];
+
+  if (!mediaPonderata && !deviazioneStandard && !semidispersione) return null;
+
+  return (
+    <div className="space-y-4">
+      {mediaPonderata && <ResultRow htmlLabel="Media ponderata (x̄)" value={formatValue(mediaPonderata.value, mediaPonderata.sigma)} unit={mediaPonderata.unit || ''} />}
+      {deviazioneStandard && <ResultRow htmlLabel="Deviazione standard (σ)" value={formatValue(deviazioneStandard.value, deviazioneStandard.sigma)} unit={deviazioneStandard.unit || ''} />}
+      {semidispersione && <ResultRow htmlLabel="Semidispersione massima (Δ/2)" value={formatValue(semidispersione.value, semidispersione.sigma)} unit={semidispersione.unit || ''} />}
+    </div>
+  );
 };
 
 
@@ -262,6 +319,12 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
         case 'youngs-double-slit':
         case 'diffraction-grating':
             return <CustomOpticsResultRenderer results={results} formatValue={formatValue} formula={formula} />;
+        case 'absolute-relative-errors':
+            return <CustomAbsoluteRelativeErrorsRenderer results={results} formatValue={formatValue} />;
+        case 'compatibility-evaluation':
+            return <CustomCompatibilityEvaluationRenderer results={results} formatValue={formatValue} />;
+        case 'uncertainty-measurement':
+            return <CustomUncertaintyMeasurementRenderer results={results} formatValue={formatValue} />;
         default:
             return null;
     }

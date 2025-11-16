@@ -39,4 +39,8 @@ export const uncertaintyMeasurementFormula: Formula = {
     },
     result: {},
     customResultRenderer: true,
+    uiOptions: {
+        switches: [],
+        getFixtureKey: () => 'uncertainty-measurement',
+    }
 };
