@@ -105,7 +105,7 @@ export const secondKindLeverFormula: Formula = {
         const { wMean: M_m_mean, sigmaWMean: sigma_M_m_mean } = weightedMean(M_m_values, sigma_M_m_values);
         const { wMean: M_r_mean, sigmaWMean: sigma_M_r_mean } = weightedMean(M_r_values, sigma_M_r_values);
 
-        const diff = M_m_mean - M_r_mean;
+        const diff = Math.abs(M_m_mean - M_r_mean);
         const sigma_diff = Math.sqrt(sigma_M_m_mean**2 + sigma_M_r_mean**2);
 
         return {
