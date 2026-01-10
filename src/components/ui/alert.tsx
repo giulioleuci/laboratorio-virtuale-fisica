@@ -12,7 +12,7 @@ const alertVariants = cva(
         destructive:
           "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive",
         warning:
-          "!bg-yellow-300 !text-gray-900 !border-yellow-400 !border-[3px] [&>svg]:!text-yellow-700 shadow-2xl shadow-yellow-400/50 font-semibold",
+          "!bg-amber-500 !text-gray-950 !border-amber-600 !border-[3px] [&>svg]:!text-amber-900 shadow-[0_0_20px_rgba(245,158,11,0.6)] font-bold ring-2 ring-amber-400/50",
       },
     },
     defaultVariants: {
