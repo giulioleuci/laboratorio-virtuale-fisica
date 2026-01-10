@@ -321,7 +321,7 @@ export default function FormulaPageClient({ id }: { id: string }) {
             </CardHeader>
             <CardContent>
                 {settings.precisionMode === 'fixed' && (
-                <Alert variant="default" className="mb-6">
+                <Alert variant="warning" className="mb-6">
                     <Info className="h-4 w-4" />
                     <AlertTitle>Attenzione!</AlertTitle>
                     <AlertDescription>
