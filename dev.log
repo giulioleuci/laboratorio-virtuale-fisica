@@ -1,3 +1,13 @@
 
 > nextn@0.1.0 dev
 > next dev --turbopack -p 9002
+
+   ▲ Next.js 15.3.3 (Turbopack)
+   - Local:        http://localhost:9002
+   - Network:      http://192.168.0.2:9002
+
+ ✓ Starting...
+ ✓ Ready in 1447ms
+ ○ Compiling /formula/[id] ...
+ ✓ Compiled /formula/[id] in 19.9s
+ GET /formula/pendulum/ 200 in 26192ms
