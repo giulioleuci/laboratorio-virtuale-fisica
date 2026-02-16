@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { cn } from "@/lib/utils";
+import { stripHtml } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { DownloadTableButton } from "./download-table-button";
@@ -172,6 +172,7 @@ export function MeasurementTable({ columns, data, setData, onGenerateSampleData,
                             onChange={(e) => updateCell(row.id, col.id, e.target.value)}
                             className="min-w-[100px] text-center"
                             placeholder="valore"
+                            aria-label={`Valore per ${stripHtml(col.label)} (riga ${row.id})`}
                           />
                         </TableCell>
                         {!col.isInteger && (
@@ -183,6 +184,7 @@ export function MeasurementTable({ columns, data, setData, onGenerateSampleData,
                               onChange={(e) => updateCell(row.id, `sigma_${col.id}`, e.target.value)}
                               className="min-w-[100px] text-center"
                               placeholder="incertezza"
+                              aria-label={`Incertezza per ${stripHtml(col.label)} (riga ${row.id})`}
                             />
                           </TableCell>
                         )}

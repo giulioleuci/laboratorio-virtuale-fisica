@@ -196,3 +196,7 @@ export const generateDownloadFilename = (prefix: string, name: string) => {
     
     return `${prefix}_${formatForFilename(name)}_${timestamp}`;
 };
+
+export function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>?/gm, '');
+}
