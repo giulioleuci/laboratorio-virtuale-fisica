@@ -192,15 +192,33 @@ export function ExperimentChart({ data: initialData, xLabel: initialXLabel, yLab
     }, [fit, chartState.swapped]);
 
     const transformedData = useMemo(() => {
-        const baseData = chartState.swapped 
-            ? initialData.map(p => ({ ...p, x: p.y, y: p.x, sigma_x: p.sigma_y, sigma_y: p.sigma_x }))
-            : initialData;
-            
-        return baseData.map(p => ({
-            ...p,
-            y_fit: p.y_fit !== undefined ? p.y_fit : (currentFit ? currentFit.slope * p.x + currentFit.intercept : undefined),
-            size: chartState.pointSize,
-        }));
+        return initialData.map(p => {
+            let x = p.x;
+            let y = p.y;
+            let sigma_x = p.sigma_x;
+            let sigma_y = p.sigma_y;
+
+            if (chartState.swapped) {
+                x = p.y;
+                y = p.x;
+                sigma_x = p.sigma_y;
+                sigma_y = p.sigma_x;
+            }
+
+            const y_fit = p.y_fit !== undefined
+                ? p.y_fit
+                : (currentFit ? currentFit.slope * x + currentFit.intercept : undefined);
+
+            return {
+                ...p,
+                x,
+                y,
+                sigma_x,
+                sigma_y,
+                y_fit,
+                size: chartState.pointSize,
+            };
+        });
     }, [initialData, chartState.swapped, currentFit, chartState.pointSize]);
 
     const dataXDomain = useMemo(() => {
