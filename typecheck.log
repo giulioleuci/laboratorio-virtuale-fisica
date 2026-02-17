@@ -1,0 +1,168 @@
+
+> nextn@0.1.0 typecheck
+> tsc --noEmit
+
+src/app/experiments/density-measurement/config.ts(80,31): error TS2339: Property 'm' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'.
+  Property 'm' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(89,37): error TS2339: Property 'm' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'.
+  Property 'm' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(89,63): error TS2551: Property 'sigma_m' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'. Did you mean 'sigma_v'?
+  Property 'sigma_m' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(90,34): error TS2339: Property 'm' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'.
+  Property 'm' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(91,56): error TS2551: Property 'sigma_m' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'. Did you mean 'sigma_v'?
+  Property 'sigma_m' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(91,70): error TS2339: Property 'm' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'.
+  Property 'm' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(107,50): error TS2339: Property 'm' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'.
+  Property 'm' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(108,50): error TS2551: Property 'sigma_m' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'. Did you mean 'sigma_v'?
+  Property 'sigma_m' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(165,25): error TS18048: 'modes' is possibly 'undefined'.
+src/app/experiments/density-measurement/config.ts(182,26): error TS2339: Property 'm' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'.
+  Property 'm' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/density-measurement/config.ts(184,32): error TS2551: Property 'sigma_m' does not exist on type '{ [x: string]: number | null | undefined; id: number; } | { v: number; sigma_v: number; id: number; }'. Did you mean 'sigma_v'?
+  Property 'sigma_m' does not exist on type '{ v: number; sigma_v: number; id: number; }'.
+src/app/experiments/diffraction-grating/config.ts(88,17): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/diffraction-grating/config.ts(89,17): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/diffraction-grating/config.ts(92,23): error TS18048: 'row.y_2m' is possibly 'undefined'.
+src/app/experiments/diffraction-grating/config.ts(93,29): error TS18048: 'row.sigma_y_2m' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(69,36): error TS18048: 'N' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(69,40): error TS18048: 'V' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(69,46): error TS18048: 'L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(69,50): error TS18048: 'R' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(73,36): error TS18048: 'V' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(73,42): error TS18048: 'L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(73,46): error TS18048: 'R' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(74,36): error TS18048: 'N' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(74,42): error TS18048: 'L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(74,46): error TS18048: 'R' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(75,38): error TS18048: 'N' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(75,42): error TS18048: 'V' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(75,48): error TS18048: 'L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(75,50): error TS18048: 'L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(75,54): error TS18048: 'R' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(76,38): error TS18048: 'N' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(76,42): error TS18048: 'V' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(76,48): error TS18048: 'L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(76,52): error TS18048: 'R' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(76,54): error TS18048: 'R' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(78,43): error TS18048: 'sigma_N' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(78,68): error TS18048: 'sigma_V' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(78,93): error TS18048: 'sigma_L' is possibly 'undefined'.
+src/app/experiments/earth-magnetic-field/config.ts(78,118): error TS18048: 'sigma_R' is possibly 'undefined'.
+src/app/experiments/hookes-law/config.ts(128,21): error TS2353: Object literal may only specify known properties, and 'isReadOnly' does not exist in type '{ id: string; label: string; unit: string; help: { title: string; description: string; }; }'.
+src/app/experiments/mechanical-energy/config.ts(89,25): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(89,29): error TS18048: 't' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(90,27): error TS18048: 'M' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(93,27): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(93,34): error TS18048: 't' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(94,27): error TS18048: 'M' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(94,31): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(94,35): error TS18048: 't' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(95,28): error TS18048: 'M' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(95,32): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(95,39): error TS18048: 't' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(96,39): error TS18048: 'sigma_M' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(96,62): error TS18048: 'sigma_d' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(96,85): error TS18048: 'sigma_t' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(110,26): error TS18048: 'm' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(110,40): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(113,37): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(114,27): error TS18048: 'm' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(115,38): error TS18048: 'sigma_m' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(115,61): error TS18048: 'sigma_d' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(126,26): error TS18048: 'F' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(126,30): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(131,30): error TS18048: 'dW_dF' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(131,38): error TS18048: 'sigma_F' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(131,53): error TS18048: 'dW_dd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(131,61): error TS18048: 'sigma_d' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(150,64): error TS18048: 'sigma_d' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(150,72): error TS18048: 'd' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(150,81): error TS18048: 'sigma_t' is possibly 'undefined'.
+src/app/experiments/mechanical-energy/config.ts(150,89): error TS18048: 't' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(86,22): error TS18048: 'x1_i' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(86,29): error TS18048: 't1_i' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(87,56): error TS18048: 'sigma_x1_i' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(87,69): error TS18048: 'x1_i' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(87,81): error TS18048: 'sigma_t1_i' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(87,94): error TS18048: 't1_i' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(89,21): error TS18048: 'x_f' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(89,27): error TS18048: 't_f' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(90,54): error TS18048: 'sigma_x_f' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(90,66): error TS18048: 'x_f' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(90,77): error TS18048: 'sigma_t_f' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(90,89): error TS18048: 't_f' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(96,27): error TS18048: 'm1' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(97,44): error TS18048: 'sigma_m1' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(97,60): error TS18048: 'm1' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(100,26): error TS18048: 'm1' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(100,31): error TS18048: 'm2' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(101,41): error TS18048: 'sigma_m1' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(101,63): error TS18048: 'sigma_m2' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(101,80): error TS18048: 'm1' is possibly 'undefined'.
+src/app/experiments/momentum-conservation/config.ts(101,85): error TS18048: 'm2' is possibly 'undefined'.
+src/app/experiments/pendulum/config.ts(25,36): error TS2339: Property 'l' does not exist on type '{ T: number; sigma_T: number; id: number; }'.
+src/app/experiments/pendulum/config.ts(25,55): error TS2339: Property 'l' does not exist on type '{ T: number; sigma_T: number; id: number; }'.
+src/app/experiments/pendulum/config.ts(27,42): error TS2551: Property 'sigma_l' does not exist on type '{ T: number; sigma_T: number; id: number; }'. Did you mean 'sigma_T'?
+src/app/experiments/pendulum/config.ts(27,67): error TS2551: Property 'sigma_l' does not exist on type '{ T: number; sigma_T: number; id: number; }'. Did you mean 'sigma_T'?
+src/app/experiments/pendulum/config.ts(136,51): error TS2339: Property 'l' does not exist on type '{ T: number; sigma_T: number; id: number; }'.
+src/app/experiments/second-kind-lever/config.ts(74,17): error TS2322: Type 'number | null | undefined' is not assignable to type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+src/app/experiments/second-kind-lever/config.ts(75,17): error TS2322: Type 'number | null | undefined' is not assignable to type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+src/app/experiments/second-kind-lever/config.ts(76,17): error TS2322: Type 'number | null | undefined' is not assignable to type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+src/app/experiments/second-kind-lever/config.ts(77,17): error TS2322: Type 'number | null | undefined' is not assignable to type 'number | null'.
+  Type 'undefined' is not assignable to type 'number | null'.
+src/app/experiments/second-kind-lever/config.ts(89,31): error TS18048: 'b_m' is possibly 'undefined'.
+src/app/experiments/second-kind-lever/config.ts(91,81): error TS18048: 'sigma_b_m' is possibly 'undefined'.
+src/app/experiments/second-kind-lever/config.ts(91,93): error TS18048: 'b_m' is possibly 'undefined'.
+src/app/experiments/second-kind-lever/config.ts(95,31): error TS18048: 'b_r' is possibly 'undefined'.
+src/app/experiments/second-kind-lever/config.ts(97,81): error TS18048: 'sigma_b_r' is possibly 'undefined'.
+src/app/experiments/second-kind-lever/config.ts(97,93): error TS18048: 'b_r' is possibly 'undefined'.
+src/app/experiments/snells-law/config.ts(63,86): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/snells-law/config.ts(64,86): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/snells-law/config.ts(69,48): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/snells-law/config.ts(69,73): error TS2345: Argument of type 'number | undefined' is not assignable to parameter of type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/youngs-double-slit/config.ts(87,17): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/youngs-double-slit/config.ts(88,17): error TS2322: Type 'number | undefined' is not assignable to type 'number'.
+  Type 'undefined' is not assignable to type 'number'.
+src/app/experiments/youngs-double-slit/config.ts(91,23): error TS18048: 'row.y_2m' is possibly 'undefined'.
+src/app/experiments/youngs-double-slit/config.ts(92,29): error TS18048: 'row.sigma_y_2m' is possibly 'undefined'.
+src/app/tools/absolute-relative-errors/config.ts(30,38): error TS2551: Property 'value' does not exist on type 'ProcessedInput'. Did you mean 'values'?
+src/app/tools/absolute-relative-errors/config.ts(31,50): error TS2551: Property 'value' does not exist on type 'ProcessedInput'. Did you mean 'values'?
+src/app/tools/compatibility-evaluation/config.ts(48,40): error TS2551: Property 'value' does not exist on type 'ProcessedInput'. Did you mean 'values'?
+src/app/tools/compatibility-evaluation/config.ts(49,52): error TS2551: Property 'value' does not exist on type 'ProcessedInput'. Did you mean 'values'?
+src/app/tools/compatibility-evaluation/config.ts(50,40): error TS2551: Property 'value' does not exist on type 'ProcessedInput'. Did you mean 'values'?
+src/app/tools/compatibility-evaluation/config.ts(51,52): error TS2551: Property 'value' does not exist on type 'ProcessedInput'. Did you mean 'values'?
+src/app/tools/compatibility-evaluation/config.ts(73,13): error TS2322: Type '(modes: any, data: any, results: any) => boolean' is not assignable to type '(modes: ModeState, data: MeasurementRow[]) => boolean'.
+  Target signature provides too few arguments. Expected 3 or more, but got 2.
+src/app/tools/compatibility-evaluation/config.ts(73,27): error TS7006: Parameter 'modes' implicitly has an 'any' type.
+src/app/tools/compatibility-evaluation/config.ts(73,34): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/app/tools/compatibility-evaluation/config.ts(73,40): error TS7006: Parameter 'results' implicitly has an 'any' type.
+src/app/tools/compatibility-evaluation/config.ts(76,31): error TS2304: Cannot find name 'processedInputs'.
+src/app/tools/compatibility-evaluation/config.ts(77,37): error TS2304: Cannot find name 'processedInputs'.
+src/components/experiment-chart.tsx(88,25): error TS7006: Parameter 'props' implicitly has an 'any' type.
+src/lib/color-utils.test.ts(3,26): error TS5097: An import path can only end with a '.ts' extension when 'allowImportingTsExtensions' is enabled.
+src/lib/stats.ts(45,3): error TS2322: Type 'MathNumericType' is not assignable to type 'number'.
+  Type 'bigint' is not assignable to type 'number'.
+src/lib/stats.ts(116,32): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/lib/stats.ts(116,32): error TS2365: Operator '*' cannot be applied to types 'MathNumericType' and 'number'.
+src/lib/stats.ts(128,14): error TS2322: Type 'MathNumericType' is not assignable to type 'number'.
+  Type 'bigint' is not assignable to type 'number'.
+src/lib/stats.ts(128,21): error TS2322: Type 'MathNumericType' is not assignable to type 'number'.
+  Type 'bigint' is not assignable to type 'number'.
+src/lib/stats.ts(156,71): error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+src/lib/stats.ts(156,71): error TS2365: Operator '*' cannot be applied to types 'MathNumericType' and 'number'.
+src/lib/stats.ts(168,14): error TS2322: Type 'MathNumericType[]' is not assignable to type 'number[]'.
+  Type 'MathNumericType' is not assignable to type 'number'.
+    Type 'bigint' is not assignable to type 'number'.

@@ -1,5 +1,6 @@
 
 "use client";
+import { useCallback, memo } from "react";
 import type { Formula } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
@@ -14,16 +15,16 @@ interface ResultsDisplayProps {
   experimentName: string;
 }
 
-const ResultRow = ({ label, value, unit, htmlLabel }: { label?: string, value: string | React.ReactNode, unit?: string, htmlLabel?: string }) => (
-    <div className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
+const ResultRow = memo(function ResultRow({ label, value, unit, htmlLabel }: { label?: string, value: string | React.ReactNode, unit?: string, htmlLabel?: string }) {
+    return <div className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
         <span className="text-muted-foreground flex items-center gap-2">
             {htmlLabel ? <span dangerouslySetInnerHTML={{ __html: htmlLabel }} /> : label}
         </span>
         <span className="font-mono text-lg">{value} {unit}</span>
     </div>
-);
+});
 
-const CustomArchimedesRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomArchimedesRenderer = memo(function CustomArchimedesRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   if (!results.B_exp || !results.B_teo) return null;
   const { B_exp, B_teo } = results;
   
@@ -33,9 +34,9 @@ const CustomArchimedesRenderer = ({ results, formatValue }: { results: any, form
       <ResultRow htmlLabel="Spinta teorica (B<sub>teo</sub>)" value={formatValue(B_teo.value, B_teo.sigma)} unit="N" />
     </div>
   );
-};
+});
 
-const CustomNewtonsSecondLawRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomNewtonsSecondLawRenderer = memo(function CustomNewtonsSecondLawRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   if (!results.a_teo || !results.a_exp) return null;
   const { a_teo, a_exp } = results;
   
@@ -45,9 +46,9 @@ const CustomNewtonsSecondLawRenderer = ({ results, formatValue }: { results: any
       <ResultRow htmlLabel="Accelerazione sperimentale (a<sub>exp</sub>)" value={formatValue(a_exp.value, a_exp.sigma)} unit="m/s²" />
     </div>
   );
-};
+});
 
-const CustomMechanicalEnergyRenderer = ({ results, formatValue, modes }: { results: any, formatValue: (v?: number, s?: number) => string, modes: any }) => {
+const CustomMechanicalEnergyRenderer = memo(function CustomMechanicalEnergyRenderer({ results, formatValue, modes }: { results: any, formatValue: (v?: number, s?: number) => string, modes: any }) {
   if (!results.delta_K || !results.Work) return null;
   const { delta_K, Work, energy_difference } = results;
   
@@ -60,9 +61,9 @@ const CustomMechanicalEnergyRenderer = ({ results, formatValue, modes }: { resul
       <ResultRow htmlLabel="Differenza (ΔK - U)" value={formatValue(energy_difference.value, energy_difference.sigma)} unit="J" />
     </div>
   );
-};
+});
 
-const CustomKirchhoffsCurrentLawRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomKirchhoffsCurrentLawRenderer = memo(function CustomKirchhoffsCurrentLawRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   if (!results.sum_incoming || !results.sum_outgoing || !results.algebraic_sum) return null;
   const { sum_incoming, sum_outgoing, algebraic_sum } = results;
   
@@ -73,9 +74,9 @@ const CustomKirchhoffsCurrentLawRenderer = ({ results, formatValue }: { results:
        <ResultRow htmlLabel="Somma Algebrica (ΣI<sub>in</sub> - ΣI<sub>out</sub>)" value={formatValue(algebraic_sum.value, algebraic_sum.sigma)} unit="A" />
     </div>
   );
-};
+});
 
-const CustomSecondKindLeverRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomSecondKindLeverRenderer = memo(function CustomSecondKindLeverRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   if (!results.M_motore || !results.M_resistente) return null;
   const { M_motore, M_resistente } = results;
   const differenza = results["Differenza |Mₘ - Mᵣ|"];
@@ -87,9 +88,9 @@ const CustomSecondKindLeverRenderer = ({ results, formatValue }: { results: any,
       {differenza && <ResultRow htmlLabel="Differenza |Mₘ - Mᵣ|" value={formatValue(differenza.value, differenza.sigma)} unit="N·m" />}
     </div>
   );
-};
+});
 
-const CustomOpticsResultRenderer = ({ results, formatValue, formula }: { results: any, formatValue: (v?: number, s?: number) => string, formula: Formula }) => {
+const CustomOpticsResultRenderer = memo(function CustomOpticsResultRenderer({ results, formatValue, formula }: { results: any, formatValue: (v?: number, s?: number) => string, formula: Formula }) {
     if (results.value === undefined || results.value === null) return null;
     const value_nm = results.value * 1e9;
     const sigma_nm = results.sigma * 1e9;
@@ -102,9 +103,9 @@ const CustomOpticsResultRenderer = ({ results, formatValue, formula }: { results
             />
          </div>
     );
-};
+});
 
-const CustomAbsoluteRelativeErrorsRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomAbsoluteRelativeErrorsRenderer = memo(function CustomAbsoluteRelativeErrorsRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   const erroreAssoluto = results["Errore assoluto"];
   const erroreRelativo = results["Errore relativo"];
   const errorePercentuale = results["Errore percentuale"];
@@ -118,9 +119,9 @@ const CustomAbsoluteRelativeErrorsRenderer = ({ results, formatValue }: { result
       {errorePercentuale && <ResultRow htmlLabel="Errore percentuale" value={formatValue(errorePercentuale.value, errorePercentuale.sigma)} unit={errorePercentuale.unit || '%'} />}
     </div>
   );
-};
+});
 
-const CustomCompatibilityEvaluationRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomCompatibilityEvaluationRenderer = memo(function CustomCompatibilityEvaluationRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   const differenza = results["Differenza |x₁ - x₂|"];
   const compatibilita = results["Compatibilità"];
   const esito = results["Esito"];
@@ -141,9 +142,9 @@ const CustomCompatibilityEvaluationRenderer = ({ results, formatValue }: { resul
       )}
     </div>
   );
-};
+});
 
-const CustomUncertaintyMeasurementRenderer = ({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) => {
+const CustomUncertaintyMeasurementRenderer = memo(function CustomUncertaintyMeasurementRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
   const mediaPonderata = results["Media ponderata"];
   const deviazioneStandard = results["Deviazione standard"];
   const erroreStandard = results["Errore standard della media"];
@@ -159,11 +160,11 @@ const CustomUncertaintyMeasurementRenderer = ({ results, formatValue }: { result
       {semidispersione && <ResultRow htmlLabel="Semidispersione massima (Δ/2)" value={formatValue(semidispersione.value, semidispersione.sigma)} unit={semidispersione.unit || ''} />}
     </div>
   );
-};
+});
 
 
-const FitDetailsRenderer = ({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) => (
-    <div className="mt-6">
+const FitDetailsRenderer = memo(function FitDetailsRenderer({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) {
+    return <div className="mt-6">
         <h4 className="font-semibold mb-2 text-md">Dettagli del Calcolo</h4>
         <div className="text-sm space-y-2 text-muted-foreground p-4 rounded-md bg-background/50">
             {details.rho && <ResultRow htmlLabel="Densità da fit (ρ)" value={formatValue(details.rho.value, details.rho.sigma)} unit="g/cm³" />}
@@ -180,9 +181,9 @@ const FitDetailsRenderer = ({ details, formatValue }: { details: any, formatValu
             {details.chi2_reduced && <ResultRow htmlLabel="Chi-quadro ridotto (χ²/dof)" value={details.chi2_reduced.toFixed(3)} />}
         </div>
     </div>
-);
+});
 
-const VariableProcessingRenderer = ({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) => {
+const VariableProcessingRenderer = memo(function VariableProcessingRenderer({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) {
     const detailEntries = Object.entries(details).filter(([, detail]: [string, any]) => detail && typeof detail === 'object' && 'mean' in detail);
     if(detailEntries.length === 0) return null;
 
@@ -201,10 +202,10 @@ const VariableProcessingRenderer = ({ details, formatValue }: { details: any, fo
             </div>
         </div>
     )
-};
+});
 
 
-const ExtraDetailsRenderer = ({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) => {
+const ExtraDetailsRenderer = memo(function ExtraDetailsRenderer({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) {
     const detailEntries = Object.entries(details).filter(([key]) => ['E_initial', 'E_final', 'p_initial', 'p_final', 'v1_i', 'v_f', 'v_final'].includes(key));
     if(detailEntries.length === 0) return null;
 
@@ -243,13 +244,13 @@ const ExtraDetailsRenderer = ({ details, formatValue }: { details: any, formatVa
             </div>
         </div>
     )
-};
+});
 
 
 export function ResultsDisplay({ results, formula, isLoading, experimentName }: ResultsDisplayProps) {
   const { settings } = useSettings();
 
-  const formatValue = (value?: number, sigma?: number): string => {
+  const formatValue = useCallback((value?: number, sigma?: number): string => {
     if (value === undefined || value === null || !isFinite(value)) return "N/D";
     
     // Auto precision mode (scientific)
@@ -260,7 +261,7 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
         
         const sigmaString = sigma.toExponential();
         const firstDigit = parseInt(sigmaString[0]);
-        let sigFigs = (firstDigit === 1) ? 2 : 1;
+        const sigFigs = (firstDigit === 1) ? 2 : 1;
 
         const roundedSigma = Number(sigma.toPrecision(sigFigs));
         
@@ -287,7 +288,7 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
     const roundedValue = value.toFixed(valueDecimalPlaces);
 
     return `${roundedValue} ± ${roundedSigma}`;
-  };
+  }, [settings.precisionMode, settings.fixedDigits]);
 
   if (isLoading) {
     return (
