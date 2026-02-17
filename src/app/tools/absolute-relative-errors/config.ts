@@ -27,8 +27,8 @@ export const absoluteRelativeErrorsFormula: Formula = {
         },
     ],
     calculation: (processedInputs) => {
-        const x = processedInputs.x?.value;
-        const sigma_x = processedInputs.sigma_x?.value;
+        const x = processedInputs.x?.mean;
+        const sigma_x = processedInputs.sigma_x?.mean;
 
         if (x === undefined || sigma_x === undefined) {
             return { details: { error: "Inserisci i dati." } };

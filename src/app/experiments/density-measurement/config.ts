@@ -71,14 +71,14 @@ export const densityMeasurementFormula: Formula = {
                 const v = v_f - v_i;
                 const sigma_v = Math.sqrt(sigma_v_i**2 + sigma_v_f**2);
 
-                return { ...row, v, sigma_v };
+                return { ...row, v, sigma_v } as MeasurementRow & { v: number, sigma_v: number };
             }
         });
 
         if (modes.calculation_method === 'average') {
             const rho_values = processedData.map(row => {
-                const m = row.m ?? 0;
-                const v = row.v ?? 0;
+                const m = row['m'] ?? 0;
+                const v = row['v'] ?? 0;
                 if (v === 0) return null;
                 return m / v;
             }).filter(rho => rho !== null) as number[];
@@ -86,9 +86,14 @@ export const densityMeasurementFormula: Formula = {
             if (rho_values.length === 0) return { details: { error: "Dati insufficienti." } };
             
             const sigmas = processedData.map(row => {
-                 if (!row.v || !row.m || !row.sigma_v || !row.sigma_m) return 0;
-                 const rho = row.m / row.v;
-                 return Math.abs(rho) * Math.sqrt((row.sigma_m / row.m) ** 2 + (row.sigma_v / row.v) ** 2);
+                 const v = row['v'];
+                 const m = row['m'];
+                 const sigma_v = row['sigma_v'];
+                 const sigma_m = row['sigma_m'];
+
+                 if (!v || !m || !sigma_v || !sigma_m) return 0;
+                 const rho = m / v;
+                 return Math.abs(rho) * Math.sqrt((sigma_m / m) ** 2 + (sigma_v / v) ** 2);
             });
 
             const { wMean, sigmaWMean } = weightedMean(rho_values, sigmas);
@@ -103,9 +108,9 @@ export const densityMeasurementFormula: Formula = {
         }
 
         // mode 'fit'
-        const vValues = processedData.map(r => r.v).filter(val => val !== null) as number[];
-        const mValues = processedData.map(r => r.m).filter(val => val !== null) as number[];
-        const mSigmas = processedData.map(r => r.sigma_m).filter(val => val !== null) as (number | null | undefined)[];
+        const vValues = processedData.map(r => r['v']).filter(val => val !== null) as number[];
+        const mValues = processedData.map(r => r['m']).filter(val => val !== null) as number[];
+        const mSigmas = processedData.map(r => r['sigma_m']).filter(val => val !== null) as (number | null | undefined)[];
 
         if (vValues.length < 2) {
             return { details: { error: "Dati insufficienti per il fit lineare." } };
@@ -161,8 +166,9 @@ export const densityMeasurementFormula: Formula = {
         chart: {
             isSupported: (modes, data) => data.length >= 2 && modes.calculation_method === 'fit',
             getInfo: (data, results, chartCustomState, modes) => {
+                const isDirect = modes?.volume_measurement_method === 'direct';
                 const processedData = data.map(row => {
-                    if (modes.volume_measurement_method === 'direct') {
+                    if (isDirect) {
                         return { ...row };
                     } else {
                         const v_i = row.v_i ?? 0;
@@ -173,15 +179,15 @@ export const densityMeasurementFormula: Formula = {
                         const v = v_f - v_i;
                         const sigma_v = Math.sqrt(sigma_v_i**2 + sigma_v_f**2);
 
-                        return { ...row, v, sigma_v };
+                        return { ...row, v, sigma_v } as MeasurementRow & { v: number, sigma_v: number };
                     }
                 });
 
                 const chartData = processedData.map(p => ({
-                    x: p.v ?? 0,
-                    y: p.m ?? 0,
-                    sigma_x: p.sigma_v ?? 0,
-                    sigma_y: p.sigma_m ?? 0
+                    x: p['v'] ?? 0,
+                    y: p['m'] ?? 0,
+                    sigma_x: p['sigma_v'] ?? 0,
+                    sigma_y: p['sigma_m'] ?? 0
                 }));
 
                 let fit;

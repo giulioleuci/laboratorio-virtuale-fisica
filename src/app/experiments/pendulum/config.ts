@@ -17,14 +17,14 @@ const getPendulumChartInfo = (
         const n = (row.n && row.n >= 1) ? row.n : 1;
         const T = t / n;
         const sigma_T = sigma_t / n;
-        return { ...row, T, sigma_T };
+        return { ...row, T, sigma_T } as MeasurementRow & { T: number, sigma_T: number };
     }
     const dataWithPeriod = data.map(getPeriodData);
     
     const chartData = dataWithPeriod.map(p => ({
-        x: xAxisUnit === 'cm' ? (p.l ?? 0) * 100 : (p.l ?? 0),
+        x: xAxisUnit === 'cm' ? (p['l'] ?? 0) * 100 : (p['l'] ?? 0),
         y: p.T ? p.T**2 : 0,
-        sigma_x: xAxisUnit === 'cm' ? (p.sigma_l ?? 0) * 100 : (p.sigma_l ?? 0),
+        sigma_x: xAxisUnit === 'cm' ? (p['sigma_l'] ?? 0) * 100 : (p['sigma_l'] ?? 0),
         sigma_y: p.T && p.sigma_T ? 2 * p.T * p.sigma_T : 0,
     }));
 
@@ -94,7 +94,7 @@ export const pendulumFormula: Formula = {
             const n = (row.n && row.n >= 1) ? row.n : 1;
             const T = t / n;
             const sigma_T = sigma_t / n;
-            return { ...row, T, sigma_T };
+            return { ...row, T, sigma_T } as MeasurementRow & { T: number, sigma_T: number };
         }
         const dataWithPeriod = rawData.map(getPeriodData);
         
@@ -133,8 +133,8 @@ export const pendulumFormula: Formula = {
         }
 
         // mode 'fit'
-        const lValues = dataWithPeriod.map(r => r.l).filter(v => v !== null) as number[];
-        const T_values = dataWithPeriod.map(r => r.T).filter(v => v !== null) as number[];
+        const lValues = dataWithPeriod.map(r => r['l']).filter(v => v != null) as number[];
+        const T_values = dataWithPeriod.map(r => r.T).filter(v => v != null) as number[];
         const tSquaredValues = T_values.map(t => t * t);
         
         const T_sigmas = dataWithPeriod.map(r => r.sigma_T).filter(v => v !== null) as number[];

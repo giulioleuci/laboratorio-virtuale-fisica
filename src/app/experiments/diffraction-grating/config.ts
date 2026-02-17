@@ -84,13 +84,15 @@ export const diffractionGratingFormula: Formula = {
             let y_m = 0, sigma_y_m = 0;
 
             if (modes.measurement_mode === 'single') {
-                if (row.y_m === null || row.sigma_y_m === null) return;
-                y_m = row.y_m;
-                sigma_y_m = row.sigma_y_m;
+                const { y_m: val, sigma_y_m: sig } = row;
+                if (val == null || sig == null) return;
+                y_m = val;
+                sigma_y_m = sig;
             } else { // 'double'
-                if (row.y_2m === null || row.sigma_y_2m === null) return;
-                y_m = row.y_2m / 2;
-                sigma_y_m = row.sigma_y_2m / 2;
+                const { y_2m: val, sigma_y_2m: sig } = row;
+                if (val == null || sig == null) return;
+                y_m = val / 2;
+                sigma_y_m = sig / 2;
             }
 
             const theta = Math.atan(y_m / L);

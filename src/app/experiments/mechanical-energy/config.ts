@@ -74,10 +74,10 @@ export const mechanicalEnergyFormula: Formula = {
         const row = rawData[0];
         const { M, sigma_M, d, sigma_d, t, sigma_t } = row;
         
-        if (M === null || d === null || t === null) {
+        if (M == null || d == null || t == null) {
             return { details: { error: "Dati (M, d, t) incompleti." } };
         }
-        if (sigma_M === null || sigma_d === null || sigma_t === null) {
+        if (sigma_M == null || sigma_d == null || sigma_t == null) {
             return { details: { error: "Incertezze (M, d, t) incomplete." } };
         }
         if (t === 0) {
@@ -102,7 +102,7 @@ export const mechanicalEnergyFormula: Formula = {
 
         if (modes.driving_force_type === 'mass') {
             const { m, sigma_m } = row;
-             if (m === null || sigma_m === null) {
+             if (m == null || sigma_m == null) {
                 return { details: { error: "Dati per la massa trainante (m) incompleti."}};
             }
             
@@ -118,7 +118,7 @@ export const mechanicalEnergyFormula: Formula = {
 
         } else { // 'force'
             const { F, sigma_F } = row;
-             if (F === null || sigma_F === null) {
+             if (F == null || sigma_F == null) {
                 return { details: { error: "Dati per la forza trainante (F) incompleti."}};
             }
             
