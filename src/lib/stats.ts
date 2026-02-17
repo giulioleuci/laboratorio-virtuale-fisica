@@ -127,8 +127,7 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
 
     return { slope, intercept, sigma_slope, sigma_intercept, R2, chi2_reduced: chi2 && (n-2 > 0) ? chi2 / (n - 2) : null };
   } catch (e) {
-    console.error("Linear regression failed:", e);
-    return null;
+    throw new Error(`Linear regression failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 }
 
@@ -168,8 +167,7 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
 
     return { coeffs, sigma_coeffs, R2 };
   } catch (e) {
-    console.error("Polynomial regression failed:", e);
-    return null;
+    throw new Error(`Polynomial regression failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 }
 
@@ -226,7 +224,6 @@ export function rationalRegression(x: number[], y: number[]): RationalRegression
 
     return { coeffs, R2 };
   } catch (e) {
-    console.error("Rational regression failed:", e);
-    return null;
+    throw new Error(`Rational regression failed: ${e instanceof Error ? e.message : String(e)}`);
   }
 }

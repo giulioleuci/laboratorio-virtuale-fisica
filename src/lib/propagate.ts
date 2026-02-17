@@ -39,7 +39,6 @@ export function calculateAndPropagate(
 
     return { value, sigma };
   } catch (error) {
-    console.error("Error in calculation and propagation:", error);
-    return null;
+    throw new Error(`Error in calculation and propagation: ${error instanceof Error ? error.message : String(error)}`);
   }
 }
