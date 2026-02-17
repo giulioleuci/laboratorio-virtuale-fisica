@@ -7,19 +7,7 @@
    - Network:      http://192.168.0.2:9002
 
  ✓ Starting...
-Attention: Next.js now collects completely anonymous telemetry regarding usage.
-This information is used to shape Next.js' roadmap and prioritize features.
-You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
-https://nextjs.org/telemetry
-
- ✓ Ready in 1478ms
+ ✓ Ready in 1447ms
  ○ Compiling /formula/[id] ...
- ✓ Compiled /formula/[id] in 30.5s
- ○ Compiling / ...
- ✓ Compiled / in 5.7s
- HEAD / 200 in 5890ms
- GET /formula/uncertainty-measurement/ 200 in 533ms
- ⚠ Cross origin request detected from 127.0.0.1 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
-Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
- GET /formula/uncertainty-measurement/ 200 in 548ms
- GET /formula/uncertainty-measurement/ 200 in 492ms
+ ✓ Compiled /formula/[id] in 19.9s
+ GET /formula/pendulum/ 200 in 26192ms
