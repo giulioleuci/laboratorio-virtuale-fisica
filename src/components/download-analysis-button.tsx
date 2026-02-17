@@ -1,7 +1,7 @@
 
 "use client";
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Formula } from '@/lib/types';
@@ -92,12 +92,12 @@ const generateMarkdownContent = (results: any, formula: Formula, formatValue: (v
 };
 
 
-export const DownloadAnalysisButton: React.FC<DownloadAnalysisButtonProps> = ({
+export const DownloadAnalysisButton: React.FC<DownloadAnalysisButtonProps> = memo(function DownloadAnalysisButton({
   results,
   formula,
   experimentName,
   formatValue
-}) => {
+}) {
   const { settings } = useSettings();
   const [isGenerating, setIsGenerating] = React.useState(false);
   
@@ -129,4 +129,4 @@ export const DownloadAnalysisButton: React.FC<DownloadAnalysisButtonProps> = ({
       <span className="sm:hidden">{isGenerating ? 'Generazione...' : 'Analisi'}</span>
     </Button>
   );
-};
+});
