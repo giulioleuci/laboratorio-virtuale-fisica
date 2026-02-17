@@ -41,31 +41,42 @@ interface MeasurementTableProps {
 
 export function MeasurementTable({ columns, data, setData, onGenerateSampleData, experimentName }: MeasurementTableProps) {
   const addRow = () => {
-    const newId = data.length > 0 ? Math.max(...data.map((r) => r.id)) + 1 : 1;
-    const newRow: MeasurementRow = { id: newId };
-    columns.forEach((col) => {
-      newRow[col.id] = null;
-      if (!col.isReadOnly && !col.isInteger) {
-        newRow[`sigma_${col.id}`] = null;
-      }
-      if (col.id === 'direction') {
+    setData((prevData) => {
+      const maxId = prevData.reduce((max, row) => (row.id > max ? row.id : max), 0);
+      const newId = maxId + 1;
+      const newRow: MeasurementRow = { id: newId };
+      columns.forEach((col) => {
+        newRow[col.id] = null;
+        if (!col.isReadOnly && !col.isInteger) {
+          newRow[`sigma_${col.id}`] = null;
+        }
+        if (col.id === 'direction') {
           newRow[col.id] = 1; // Default to 'entrante'
-      }
+        }
+      });
+      return [...prevData, newRow];
     });
-    setData((prevData) => [...prevData, newRow]);
   };
 
   const removeRow = (id: number) => {
-    setData((prevData) => prevData.filter((row) => row.id !== id));
+    setData((prevData) => {
+      const index = prevData.findIndex((row) => row.id === id);
+      if (index === -1) return prevData;
+      const newData = [...prevData];
+      newData.splice(index, 1);
+      return newData;
+    });
   };
 
   const updateCell = (id: number, column: string, value: string | number) => {
     const numericValue = typeof value === 'string' && value === "" ? null : parseFloat(String(value));
-    setData((prevData) =>
-      prevData.map((row) =>
-        row.id === id ? { ...row, [column]: numericValue } : row
-      )
-    );
+    setData((prevData) => {
+      const index = prevData.findIndex((row) => row.id === id);
+      if (index === -1) return prevData;
+      const newData = [...prevData];
+      newData[index] = { ...newData[index], [column]: numericValue };
+      return newData;
+    });
   };
 
   const clearTable = () => {
