@@ -131,6 +131,11 @@ export default function FormulaPageClient({ id }: { id: string }) {
   }, [formula, initialModes]);
   
   const handleModeChange = (switchId: string, value: string) => {
+    // Clear data to avoid inconsistent state
+    setMeasurements([]);
+    setResults(null);
+    setChartCustomState({});
+
     setModes(prev => {
         let newModes: ModeState = { ...prev, [switchId]: value };
         
@@ -147,10 +152,6 @@ export default function FormulaPageClient({ id }: { id: string }) {
             }
         });
         
-        // Clear data to avoid inconsistent state
-        setMeasurements([]);
-        setResults(null);
-        setChartCustomState({});
         return newModes;
     });
   };
