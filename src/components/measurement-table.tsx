@@ -39,6 +39,25 @@ interface MeasurementTableProps {
   experimentName: string;
 }
 
+const DirectionControl = ({rowId, value, onChange}: {rowId: number, value: number | null | undefined, onChange: (id: number, column: string, value: string | number) => void}) => {
+  return (
+    <RadioGroup
+        value={String(value)}
+        onValueChange={(val) => onChange(rowId, 'direction', Number(val))}
+        className="flex items-center justify-center gap-4"
+    >
+        <div className="flex items-center space-x-2">
+            <RadioGroupItem value="1" id={`dir-in-${rowId}`} />
+            <Label htmlFor={`dir-in-${rowId}`} className="font-normal cursor-pointer">Entrante</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+            <RadioGroupItem value="-1" id={`dir-out-${rowId}`} />
+            <Label htmlFor={`dir-out-${rowId}`} className="font-normal cursor-pointer">Uscente</Label>
+        </div>
+    </RadioGroup>
+  )
+}
+
 export function MeasurementTable({ columns, data, setData, onGenerateSampleData, experimentName }: MeasurementTableProps) {
   const addRow = () => {
     setData((prevData) => {
@@ -114,25 +133,6 @@ export function MeasurementTable({ columns, data, setData, onGenerateSampleData,
     return Number(value).toFixed(3);
   }
   
-  const DirectionControl = ({rowId, value, onChange}: {rowId: number, value: number | null | undefined, onChange: (id: number, column: string, value: string | number) => void}) => {
-      return (
-        <RadioGroup
-            value={String(value)}
-            onValueChange={(val) => onChange(rowId, 'direction', Number(val))}
-            className="flex items-center justify-center gap-4"
-        >
-            <div className="flex items-center space-x-2">
-                <RadioGroupItem value="1" id={`dir-in-${rowId}`} />
-                <Label htmlFor={`dir-in-${rowId}`} className="font-normal cursor-pointer">Entrante</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-                <RadioGroupItem value="-1" id={`dir-out-${rowId}`} />
-                <Label htmlFor={`dir-out-${rowId}`} className="font-normal cursor-pointer">Uscente</Label>
-            </div>
-        </RadioGroup>
-      )
-  }
-
   return (
     <div className="space-y-4">
       <div className="w-full overflow-x-auto rounded-md border">
