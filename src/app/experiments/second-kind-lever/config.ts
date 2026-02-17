@@ -68,7 +68,7 @@ export const secondKindLeverFormula: Formula = {
 
         rawData.forEach(row => {
             const { b_m, sigma_b_m, b_r, sigma_b_r } = row;
-            let F_m: number | null, sigma_F_m: number | null, F_r: number | null, sigma_F_r: number | null;
+            let F_m: number | null | undefined, sigma_F_m: number | null | undefined, F_r: number | null | undefined, sigma_F_r: number | null | undefined;
 
             if (isForce) {
                 F_m = row.F_m;
@@ -82,8 +82,8 @@ export const secondKindLeverFormula: Formula = {
                 sigma_F_r = (row.sigma_m_r ?? 0) * G;
             }
 
-            if (F_m === null || b_m === null || F_r === null || b_r === null) return;
-            if (sigma_F_m === null || sigma_b_m === null || sigma_F_r === null || sigma_b_r === null) return;
+            if (F_m == null || b_m == null || F_r == null || b_r == null) return;
+            if (sigma_F_m == null || sigma_b_m == null || sigma_F_r == null || sigma_b_r == null) return;
             
             // Calcolo momento motore
             const M_m = F_m * b_m;

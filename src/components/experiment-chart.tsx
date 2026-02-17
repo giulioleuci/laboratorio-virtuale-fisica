@@ -85,7 +85,7 @@ const ChartComponent = ({
                 dataKey="y" 
                 fill="#000000" 
                 isAnimationActive={false}
-                shape={(props) => {
+                shape={(props: any) => {
                     const { cx, cy } = props;
                     const radius = chartState.pointSize / 10;
                     return <circle cx={cx} cy={cy} r={radius} fill="#000000" />;

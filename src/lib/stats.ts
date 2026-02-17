@@ -4,7 +4,7 @@ import { levenbergMarquardt } from 'ml-levenberg-marquardt';
 
 export function mean(values: number[]): number {
   if (values.length === 0) return 0;
-  return mathMean(values);
+  return mathMean(values) as number;
 }
 
 export function weightedMean(values: number[], sigmas: (number | null | undefined)[]): { wMean: number; sigmaWMean: number } {
@@ -25,7 +25,7 @@ export function weightedMean(values: number[], sigmas: (number | null | undefine
   }
   
   const weights = filteredSigmas.map(s => (s && s > 0 ? 1 / (s * s) : 0));
-  const sumOfWeights = sum(weights);
+  const sumOfWeights = sum(weights) as number;
 
   if (sumOfWeights === 0) { // Fallback if all weights are zero
     const simpleMean = mean(filteredValues);
@@ -33,7 +33,7 @@ export function weightedMean(values: number[], sigmas: (number | null | undefine
     return { wMean: simpleMean, sigmaWMean: simpleStdErr };
   }
 
-  const weightedSum = sum(filteredValues.map((v, i) => v * weights[i]));
+  const weightedSum = sum(filteredValues.map((v, i) => v * weights[i])) as number;
   const wMean = weightedSum / sumOfWeights;
   const sigmaWMean = Math.sqrt(1 / sumOfWeights);
 
@@ -42,7 +42,7 @@ export function weightedMean(values: number[], sigmas: (number | null | undefine
 
 export function sampleStdDev(values: number[]): number {
   if (values.length < 2) return 0;
-  return std(values, 'unbiased');
+  return std(values, 'unbiased') as number;
 }
 
 export function stdErrMean(values: number[]): number {
@@ -82,13 +82,13 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const y_pred = x.map(xi => slope * xi);
     const residuals = y.map((yi, i) => yi - y_pred[i]);
     const y_mean = mean(y);
-    const ss_tot = sum(y.map(yi => (yi - y_mean)**2));
-    const ss_res = sum(residuals.map(r => r**2));
+    const ss_tot = sum(y.map(yi => (yi - y_mean)**2)) as number;
+    const ss_res = sum(residuals.map(r => r**2)) as number;
     const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
 
-    let chi2 = null;
+    let chi2: number | null = null;
     if(sigma_y && sigma_y.some(s => s && s>0)) {
-      chi2 = sum(residuals.map((r, i) => (sigma_y[i] && sigma_y[i]! > 0 ? (r / sigma_y[i]!)**2 : 0)));
+      chi2 = sum(residuals.map((r, i) => (sigma_y[i] && sigma_y[i]! > 0 ? (r / sigma_y[i]!)**2 : 0))) as number;
     }
 
     return { slope, intercept: 0, sigma_slope, sigma_intercept: 0, R2, chi2_reduced: chi2 ? chi2 / (n - 1) : null };
@@ -109,20 +109,20 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const XTWY = multiply(XTW, Y);
     const coeffs = multiply(covMatrix, XTWY) as Matrix;
 
-    const [intercept, slope] = coeffs.toArray().flat();
-    const sigma_intercept = Math.sqrt(covMatrix.get([0, 0]));
-    const sigma_slope = Math.sqrt(covMatrix.get([1, 1]));
+    const [intercept, slope] = coeffs.toArray().flat() as number[];
+    const sigma_intercept = Math.sqrt(covMatrix.get([0, 0]) as number);
+    const sigma_slope = Math.sqrt(covMatrix.get([1, 1]) as number);
 
     const y_pred = x.map(xi => slope * xi + intercept);
     const residuals = y.map((yi, i) => yi - y_pred[i]);
     const y_mean = mean(y);
-    const ss_tot = sum(y.map(yi => (yi - y_mean)**2));
-    const ss_res = sum(residuals.map(r => r**2));
+    const ss_tot = sum(y.map(yi => (yi - y_mean)**2)) as number;
+    const ss_res = sum(residuals.map(r => r**2)) as number;
     const R2 = ss_tot > 0 ? 1 - (ss_res / ss_tot) : 1;
     
-    let chi2 = null;
+    let chi2: number | null = null;
     if(sigma_y && sigma_y.some(s => s && s>0)) {
-      chi2 = sum(residuals.map((r, i) => (sigma_y[i] && sigma_y[i]! > 0 ? (r / sigma_y[i]!)**2 : 0)));
+      chi2 = sum(residuals.map((r, i) => (sigma_y[i] && sigma_y[i]! > 0 ? (r / sigma_y[i]!)**2 : 0))) as number;
     }
 
     return { slope, intercept, sigma_slope, sigma_intercept, R2, chi2_reduced: chi2 && (n-2 > 0) ? chi2 / (n - 2) : null };
@@ -152,18 +152,18 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
     const XTY = multiply(XT, Y);
     const coeffsMatrix = multiply(covMatrix, XTY) as Matrix;
 
-    const coeffs = coeffsMatrix.toArray().flat();
-    const y_pred_for_residuals = x.map(xi => sum(coeffs.map((c, p) => c * (xi ** p))));
+    const coeffs = coeffsMatrix.toArray().flat() as number[];
+    const y_pred_for_residuals = x.map(xi => sum(coeffs.map((c, p) => c * (xi ** p))) as number);
     const residuals = y.map((yi, i) => yi - y_pred_for_residuals[i]);
     
-    const ss_res = sum(residuals.map(r => r**2));
+    const ss_res = sum(residuals.map(r => r**2)) as number;
     const y_mean = mean(y);
-    const ss_tot = sum(y.map(yi => (yi - y_mean)**2));
+    const ss_tot = sum(y.map(yi => (yi - y_mean)**2)) as number;
     
     const R2 = ss_tot > 0 ? 1 - (ss_res / ss_tot) : 1;
 
     // Simplified sigma calculation from diagonal of covariance matrix
-    const sigma_coeffs = Array.from({ length: degree + 1 }, (_, i) => Math.sqrt(covMatrix.get([i, i]) * (ss_res / (n - (degree + 1)))));
+    const sigma_coeffs = Array.from({ length: degree + 1 }, (_, i) => Math.sqrt((covMatrix.get([i, i]) as number) * (ss_res / (n - (degree + 1)))));
 
     return { coeffs, sigma_coeffs, R2 };
   } catch (e) {
@@ -218,8 +218,8 @@ export function rationalRegression(x: number[], y: number[]): RationalRegression
     const coeffs = result.parameterValues;
     const y_pred = x.map(fn(coeffs));
     const y_mean = mean(y);
-    const ss_tot = sum(y.map((yi) => (yi - y_mean) ** 2));
-    const ss_res = sum(y.map((yi, i) => (yi - y_pred[i]) ** 2));
+    const ss_tot = sum(y.map((yi) => (yi - y_mean) ** 2)) as number;
+    const ss_res = sum(y.map((yi, i) => (yi - y_pred[i]) ** 2)) as number;
     const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
 
     return { coeffs, R2 };

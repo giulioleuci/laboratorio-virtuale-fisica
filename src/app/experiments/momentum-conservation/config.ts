@@ -72,10 +72,10 @@ export const momentumConservationFormula: Formula = {
         const row = rawData[0];
         const { m1, sigma_m1, x1_i, sigma_x1_i, t1_i, sigma_t1_i, m2, sigma_m2, x_f, sigma_x_f, t_f, sigma_t_f } = row;
 
-        if (m1 === null || x1_i === null || t1_i === null || m2 === null || x_f === null || t_f === null) {
+        if (m1 == null || x1_i == null || t1_i == null || m2 == null || x_f == null || t_f == null) {
             return { details: { error: "Dati incompleti." } };
         }
-        if (sigma_m1 === null || sigma_x1_i === null || sigma_t1_i === null || sigma_m2 === null || sigma_x_f === null || sigma_t_f === null) {
+        if (sigma_m1 == null || sigma_x1_i == null || sigma_t1_i == null || sigma_m2 == null || sigma_x_f == null || sigma_t_f == null) {
             return { details: { error: "Incertezze incomplete." } };
         }
         if (t1_i === 0 || t_f === 0) {

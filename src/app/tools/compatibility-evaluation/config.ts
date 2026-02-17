@@ -45,10 +45,10 @@ export const compatibilityEvaluationFormula: Formula = {
         },
     ],
     calculation: (processedInputs) => {
-        const x1 = processedInputs.x1?.value;
-        const sigma_x1 = processedInputs.sigma_x1?.value;
-        const x2 = processedInputs.x2?.value;
-        const sigma_x2 = processedInputs.sigma_x2?.value;
+        const x1 = processedInputs.x1?.mean;
+        const sigma_x1 = processedInputs.sigma_x1?.mean;
+        const x2 = processedInputs.x2?.mean;
+        const sigma_x2 = processedInputs.sigma_x2?.mean;
 
         if (x1 === undefined || sigma_x1 === undefined || x2 === undefined || sigma_x2 === undefined) {
             return { details: { error: "Inserisci tutti i dati." } };
@@ -64,25 +64,36 @@ export const compatibilityEvaluationFormula: Formula = {
             "Differenza |x₁ - x₂|": { value: diff, sigma: sigma_diff, unit: '' },
             "Compatibilità": { value: compatibility, sigma: null, unit: 'σ' },
             "Esito": { value: areCompatible ? "Compatibili" : "Non compatibili", sigma: null, unit: '' },
-            details: {}
+            details: { x1, sigma_x1, x2, sigma_x2 }
         };
     },
     result: {},
     uiOptions: {
         chart: {
-            isSupported: (modes, data, results) => !!results?.Compatibilità,
-            getInfo: (data: MeasurementRow[], results) => {
-                const chartData = data.map((row, i) => {
-                    const x = processedInputs[`x${i + 1}`]?.value ?? 0;
-                    const sigma_x = processedInputs[`sigma_x${i + 1}`]?.value ?? 0;
-                    return { x, y: i + 1, sigma_x, sigma_y: 0 };
-                });
+            isSupported: (modes, data) => data.length > 0,
+            getInfo: (data: MeasurementRow[], results: any) => {
+                const x1 = results?.details?.x1;
+                const sigma_x1 = results?.details?.sigma_x1;
+                const x2 = results?.details?.x2;
+                const sigma_x2 = results?.details?.sigma_x2;
+
+                if (x1 === undefined || x2 === undefined) {
+                     return {
+                        data: [],
+                        xLabel: 'Valore misurato',
+                        yLabel: '',
+                    };
+                }
+
+                const chartData = [
+                    { x: 1, y: x1, sigma_y: sigma_x1, sigma_x: 0 },
+                    { x: 2, y: x2, sigma_y: sigma_x2, sigma_x: 0 }
+                ];
 
                 return {
                     data: chartData,
-                    xLabel: 'Valore misurato',
-                    yLabel: '',
-                    isErrorChart: true,
+                    xLabel: 'Misura',
+                    yLabel: 'Valore',
                 } as ChartInfo;
             }
         }

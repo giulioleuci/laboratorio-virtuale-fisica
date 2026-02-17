@@ -13,9 +13,6 @@ const nextConfig: NextConfig = {
   }),
   // Safer routing on static hosts
   trailingSlash: true,
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },

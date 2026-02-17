@@ -1,6 +1,6 @@
 
 import { linearRegression, G_CONST, weightedMean } from '@/lib/stats';
-import type { Formula, ProcessedInput, MeasurementRow, ModeState, ChartInfo, CalculationResult, ChartDataPoint } from '@/lib/types';
+import type { Formula, ProcessedInput, MeasurementRow, ModeState, ChartInfo, CalculationResult, ChartDataPoint, FormulaInput } from '@/lib/types';
 import { HookesLawChartControls } from './hookes-law-chart-controls';
 
 // Function to transform data and calculate fit for the chart
@@ -79,7 +79,7 @@ export const hookesLawFormula: Formula = {
     description: "Verifica la relazione tra la forza applicata a una molla e la sua elongazione per determinare la costante elastica (k).",
     category: 'Statica',
     getInputs: (modes: ModeState) => {
-        const inputs = [
+        const inputs: FormulaInput[] = [
              { 
                 id: 'l_riposo', 
                 label: 'Lunghezza a riposo (L₀)', 

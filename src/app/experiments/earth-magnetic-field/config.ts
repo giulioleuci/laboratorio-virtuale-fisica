@@ -59,8 +59,8 @@ export const earthMagneticFieldFormula: Formula = {
 
         rawData.forEach(row => {
             const { N, sigma_N, L, sigma_L, R, sigma_R, V, sigma_V } = row;
-            if (N === null || L === null || R === null || V === null || L === 0 || R === 0) return;
-            if (sigma_N === null || sigma_L === null || sigma_R === null || sigma_V === null) return;
+            if (N == null || L == null || R == null || V == null || L === 0 || R === 0) return;
+            if (sigma_N == null || sigma_L == null || sigma_R == null || sigma_V == null) return;
             
             // B_solenoide = (mu0 * N * I) / L
             // I = V / R
