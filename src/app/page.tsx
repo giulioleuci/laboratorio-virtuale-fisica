@@ -2,7 +2,7 @@
 "use client";
 
 import Link from 'next/link';
-import { formulas } from '@/lib/formulas';
+import { formulas, CATEGORIES } from '@/lib/formulas';
 import {
   Card,
   CardHeader,
@@ -56,21 +56,6 @@ const HomePageSkeleton = () => (
 export default function HomePage() {
   const { settings, isLoaded } = useSettings();
 
-  const categories: FormulaCategory[] = [
-    "Esperienze introduttive",
-    "Statica",
-    "Cinematica",
-    "Dinamica",
-    "Fluidi",
-    "Calorimetria",
-    "Termodinamica",
-    "Ottica",
-    "Elettricità",
-    "Magnetismo",
-    "Fisica Moderna",
-    "Strumenti"
-  ];
-
   const groupedFormulas = useMemo(() => {
     return formulas.reduce((acc, formula) => {
       const category = formula.category;
@@ -99,7 +84,7 @@ export default function HomePage() {
         </header>
         
         <div className="space-y-16">
-          {categories.map(category => {
+          {CATEGORIES.map(category => {
             const categoryFormulas = groupedFormulas[category];
             if (!categoryFormulas || categoryFormulas.length === 0) {
               return null;

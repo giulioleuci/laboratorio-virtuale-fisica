@@ -52,7 +52,6 @@ export const formulas: Formula[] = [
 ];
 
 export const CATEGORIES: FormulaCategory[] = [
-    "Strumenti",
     "Esperienze introduttive",
     "Statica",
     "Cinematica",
@@ -63,5 +62,6 @@ export const CATEGORIES: FormulaCategory[] = [
     "Ottica",
     "Elettricità",
     "Magnetismo",
-    "Fisica Moderna"
+    "Fisica Moderna",
+    "Strumenti"
   ];
