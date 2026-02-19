@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
@@ -37,6 +36,37 @@ interface MeasurementTableProps {
   setData: Dispatch<SetStateAction<MeasurementRow[]>>;
   onGenerateSampleData: () => void;
   experimentName: string;
+}
+
+const formatReadOnlyValue = (value: any) => {
+  if (value === null || value === undefined || isNaN(value)) return "-";
+  return Number(value).toFixed(3);
+}
+
+const ColumnHeaderLabel = ({ label, help }: { label: string, help?: { title: string, description: string } }) => {
+  return (
+      <div className="flex items-center justify-center gap-2">
+           <span dangerouslySetInnerHTML={{ __html: label }} />
+           {help && (
+              <Dialog>
+                  <DialogTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-4 w-4 text-muted-foreground hover:text-primary">
+                          <Info className="h-4 w-4" />
+                          <span className="sr-only">Info su {help.title}</span>
+                      </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                      <DialogHeader>
+                          <DialogTitle>{help.title}</DialogTitle>
+                          <DialogDescription className="pt-4 text-base">
+                              {help.description}
+                          </DialogDescription>
+                      </DialogHeader>
+                  </DialogContent>
+              </Dialog>
+           )}
+      </div>
+  );
 }
 
 const DirectionControl = ({rowId, value, onChange}: {rowId: number, value: number | null | undefined, onChange: (id: number, column: string, value: string | number) => void}) => {
@@ -102,37 +132,6 @@ export function MeasurementTable({ columns, data, setData, onGenerateSampleData,
     setData([]);
   };
 
-  const renderLabel = (label: string, help?: {title: string, description: string}) => {
-    return (
-        <div className="flex items-center justify-center gap-2">
-             <span dangerouslySetInnerHTML={{ __html: label }} />
-             {help && (
-                <Dialog>
-                    <DialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-4 w-4 text-muted-foreground hover:text-primary">
-                            <Info className="h-4 w-4" />
-                            <span className="sr-only">Info su {help.title}</span>
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>{help.title}</DialogTitle>
-                            <DialogDescription className="pt-4 text-base">
-                                {help.description}
-                            </DialogDescription>
-                        </DialogHeader>
-                    </DialogContent>
-                </Dialog>
-             )}
-        </div>
-    );
-  }
-  
-  const formatReadOnlyValue = (value: any) => {
-    if (value === null || value === undefined || isNaN(value)) return "-";
-    return Number(value).toFixed(3);
-  }
-  
   return (
     <div className="space-y-4">
       <div className="w-full overflow-x-auto rounded-md border">
@@ -141,7 +140,7 @@ export function MeasurementTable({ columns, data, setData, onGenerateSampleData,
             <TableRow>
               {columns.map((col) => (
                 <TableHead key={col.id} colSpan={!col.isReadOnly && !col.isInteger ? 2 : 1} className="text-center whitespace-nowrap">
-                  {renderLabel(col.label, col.help)}
+                  <ColumnHeaderLabel label={col.label} help={col.help} />
                    {col.unit && <span className="font-normal text-muted-foreground text-xs ml-1">({col.unit})</span>}
                 </TableHead>
               ))}
