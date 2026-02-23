@@ -171,46 +171,38 @@ export const hookesLawFormula: Formula = {
         }
         
         // mode 'fit'
-        // Calcola gli allungamenti e le loro incertezze
-        const deltaL_values_cm: number[] = [];
-        const deltaL_sigmas_cm: (number | null | undefined)[] = [];
-        
-        rawData.forEach(row => {
-            const l_riposo = row.l_riposo;
-            const l_finale = row.l_finale;
-            const sigma_l_riposo = row.sigma_l_riposo;
-            const sigma_l_finale = row.sigma_l_finale;
-            
-            if (l_riposo !== null && l_riposo !== undefined && l_finale !== null && l_finale !== undefined) {
-                const deltaL = l_finale - l_riposo;
-                deltaL_values_cm.push(deltaL);
-                
-                // Propagazione errore: σ(ΔL) = √(σ(L)² + σ(L₀)²)
-                if (sigma_l_riposo !== null && sigma_l_riposo !== undefined && 
-                    sigma_l_finale !== null && sigma_l_finale !== undefined) {
-                    const sigma_deltaL = Math.sqrt(sigma_l_finale ** 2 + sigma_l_riposo ** 2);
-                    deltaL_sigmas_cm.push(sigma_deltaL);
-                } else {
-                    deltaL_sigmas_cm.push(null);
-                }
-            }
+        // Filtra i dati validi: devono esserci sia le lunghezze che l'input (forza o massa)
+        const validData = rawData.filter(row => {
+            const hasL = row.l_riposo !== null && row.l_riposo !== undefined &&
+                         row.l_finale !== null && row.l_finale !== undefined;
+            const hasInput = modes.input_type === 'force'
+                ? row.F !== null && row.F !== undefined
+                : row.m !== null && row.m !== undefined;
+            return hasL && hasInput;
         });
 
-        if (deltaL_values_cm.length < 2) {
+        if (validData.length < 2) {
             return { details: { error: "Dati insufficienti per il fit lineare." } };
         }
+
+        // Calcola gli allungamenti e le loro incertezze
+        const deltaL_values_cm = validData.map(row => row.l_finale! - row.l_riposo!);
+        const deltaL_sigmas_cm = validData.map(row => {
+            if (row.sigma_l_riposo !== null && row.sigma_l_riposo !== undefined &&
+                row.sigma_l_finale !== null && row.sigma_l_finale !== undefined) {
+                return Math.sqrt(row.sigma_l_finale ** 2 + row.sigma_l_riposo ** 2);
+            }
+            return null;
+        });
         
         let F_values_N: number[];
         let F_sigmas_N: (number | null | undefined)[];
         if (modes.input_type === 'force') {
-            F_values_N = rawData.map(r => r.F).filter(v => v !== null) as number[];
-            F_sigmas_N = rawData.map(r => r.sigma_F).filter(v => v !== null) as (number | null | undefined)[];
+            F_values_N = validData.map(r => r.F!);
+            F_sigmas_N = validData.map(r => r.sigma_F);
         } else { // mass
-            const mValues_g = rawData.map(r => r.m).filter(v => v !== null) as number[];
-            const mSigmas_g = rawData.map(r => r.sigma_m).filter(v => v !== null) as (number | null | undefined)[];
-            if (mValues_g.length < 2) return { details: { error: "Dati insufficienti per il fit lineare." } };
-            F_values_N = mValues_g.map(m => (m / 1000) * G_CONST);
-            F_sigmas_N = mSigmas_g.map(s => s ? (s / 1000) * G_CONST : null);
+            F_values_N = validData.map(r => (r.m! / 1000) * G_CONST);
+            F_sigmas_N = validData.map(r => r.sigma_m !== null && r.sigma_m !== undefined ? (r.sigma_m / 1000) * G_CONST : null);
         }
 
         const deltaL_values_m = deltaL_values_cm.map(l => l / 100);
