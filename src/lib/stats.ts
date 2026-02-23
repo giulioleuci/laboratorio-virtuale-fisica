@@ -8,36 +8,36 @@ export function mean(values: number[]): number {
 }
 
 export function weightedMean(values: number[], sigmas: (number | null | undefined)[]): { wMean: number; sigmaWMean: number } {
-  if (values.length === 0) return { wMean: 0, sigmaWMean: 0 };
+  const n = values.length;
+  if (n === 0) return { wMean: 0, sigmaWMean: 0 };
 
-  const validIndices = values.map((v, i) => v !== null && v !== undefined && isFinite(v) && (!sigmas[i] || (sigmas[i] !== null && sigmas[i] !== undefined && isFinite(sigmas[i]!)))).map((valid, i) => valid ? i : -1).filter(i => i !== -1);
-  if (validIndices.length === 0) return { wMean: 0, sigmaWMean: 0 };
-  
-  const filteredValues = validIndices.map(i => values[i]);
-  const filteredSigmas = validIndices.map(i => sigmas[i]);
+  let sumOfWeights = 0;
+  let weightedSum = 0;
+  let hasValidSigmas = false;
+  const filteredValues: number[] = [];
 
-  const hasValidSigmas = filteredSigmas.some(s => s && s > 0);
+  for (let i = 0; i < n; i++) {
+    const v = values[i];
+    const s = sigmas[i];
 
-  if (!hasValidSigmas) {
-    const simpleMean = mean(filteredValues);
-    const simpleStdErr = stdErrMean(filteredValues);
-    return { wMean: simpleMean, sigmaWMean: simpleStdErr };
-  }
-  
-  const weights = filteredSigmas.map(s => (s && s > 0 ? 1 / (s * s) : 0));
-  const sumOfWeights = sum(weights) as number;
-
-  if (sumOfWeights === 0) { // Fallback if all weights are zero
-    const simpleMean = mean(filteredValues);
-    const simpleStdErr = stdErrMean(filteredValues);
-    return { wMean: simpleMean, sigmaWMean: simpleStdErr };
+    if (v !== null && v !== undefined && isFinite(v) && (!s || isFinite(s))) {
+      filteredValues.push(v);
+      if (s !== null && s !== undefined && s > 0) {
+        const w = 1 / (s * s);
+        sumOfWeights += w;
+        weightedSum += v * w;
+        hasValidSigmas = true;
+      }
+    }
   }
 
-  const weightedSum = sum(filteredValues.map((v, i) => v * weights[i])) as number;
-  const wMean = weightedSum / sumOfWeights;
-  const sigmaWMean = Math.sqrt(1 / sumOfWeights);
+  if (filteredValues.length === 0) return { wMean: 0, sigmaWMean: 0 };
 
-  return { wMean, sigmaWMean };
+  if (!hasValidSigmas || sumOfWeights === 0) {
+    return { wMean: mean(filteredValues), sigmaWMean: stdErrMean(filteredValues) };
+  }
+
+  return { wMean: weightedSum / sumOfWeights, sigmaWMean: Math.sqrt(1 / sumOfWeights) };
 }
 
 export function sampleStdDev(values: number[]): number {
