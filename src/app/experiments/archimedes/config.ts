@@ -1,6 +1,6 @@
 import type { Formula, ProcessedInput, ModeState, MeasurementRow } from '@/lib/types';
 import { propagateError } from '@/lib/propagate';
-import { G_CONST } from '@/lib/stats';
+import { G_CONST } from '@/lib/constants';
 
 const rho_acqua = 997; // kg/m^3
 const rho_aria = 1.225; // kg/m^3

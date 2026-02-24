@@ -1,5 +1,5 @@
 
-import { linearRegression, polynomialRegression, G_CONST } from '@/lib/stats';
+import { linearRegression, polynomialRegression } from '@/lib/stats';
 import type { Formula, ProcessedInput, ModeState, MeasurementRow, ChartInfo, CalculationResult } from '@/lib/types';
 import { FreeFallChartControls } from './free-fall-chart-controls';
 

@@ -1,6 +1,5 @@
 
 import type { Formula, ProcessedInput, MeasurementRow, ModeState } from '@/lib/types';
-import { G_CONST } from '@/lib/stats';
 import { mean } from 'mathjs';
 
 export const momentumConservationFormula: Formula = {

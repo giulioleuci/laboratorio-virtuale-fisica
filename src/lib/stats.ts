@@ -171,8 +171,6 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
   }
 }
 
-export const G_CONST = 9.80665;
-
 export interface ExponentialRegressionResult {
   a: number;
   b: number;
