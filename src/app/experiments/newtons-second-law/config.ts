@@ -70,14 +70,15 @@ export const newtonsSecondLawFormula: Formula = {
         const a_teo = { value: a_teo_val, sigma: Math.sqrt(sigma_a_teo_sq) };
 
         // Experimental acceleration from parabolic fit x(t)
-        const tValues = rawData.map(r => r.t).filter(v => v !== null) as number[];
-        const xValues = rawData.map(r => r.x).filter(v => v !== null) as number[];
+        const validData = rawData.filter(r => r.t != null && r.x != null);
+        const tValues = validData.map(r => r.t) as number[];
+        const xValues = validData.map(r => r.x) as number[];
         
         if (tValues.length < 3) {
             return { a_teo, a_exp: null, details: { error: "Dati di posizione insufficienti per il fit (min 3 punti)." } };
         }
 
-        const fit = require('@/lib/stats').polynomialRegression(tValues, xValues, 2);
+        const fit = polynomialRegression(tValues, xValues, 2);
 
         if (!fit) {
             return { a_teo, a_exp: null, details: { error: "Fit parabolico fallito." } };
