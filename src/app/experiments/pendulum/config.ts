@@ -1,5 +1,5 @@
 
-import { linearRegression, G_CONST, weightedMean } from '@/lib/stats';
+import { linearRegression, weightedMean } from '@/lib/stats';
 import type { Formula, ProcessedInput, MeasurementRow, ModeState, ChartInfo, CalculationResult } from '@/lib/types';
 import { PendulumChartControls } from './pendulum-chart-controls';
 

@@ -1,5 +1,6 @@
 
-import { polynomialRegression, G_CONST } from '@/lib/stats';
+import { polynomialRegression } from '@/lib/stats';
+import { G_CONST } from '@/lib/constants';
 import type { Formula, ProcessedInput, MeasurementRow, ModeState } from '@/lib/types';
 import { mean } from 'mathjs';
 

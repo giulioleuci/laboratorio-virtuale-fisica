@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ArrowLeft, Info } from "lucide-react";
 
 import { formulas } from "@/lib/formulas";
-import { weightedMean, stdErrMean, G_CONST } from "@/lib/stats";
+import { weightedMean, stdErrMean } from "@/lib/stats";
+import { G_CONST } from "@/lib/constants";
 import type { Formula, MeasurementRow, ModeState, ProcessedInput } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

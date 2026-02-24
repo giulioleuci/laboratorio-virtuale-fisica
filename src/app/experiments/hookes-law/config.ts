@@ -1,5 +1,6 @@
 
-import { linearRegression, G_CONST, weightedMean } from '@/lib/stats';
+import { linearRegression, weightedMean } from '@/lib/stats';
+import { G_CONST } from '@/lib/constants';
 import type { Formula, ProcessedInput, MeasurementRow, ModeState, ChartInfo, CalculationResult, ChartDataPoint, FormulaInput } from '@/lib/types';
 import { HookesLawChartControls } from './hookes-law-chart-controls';
 
