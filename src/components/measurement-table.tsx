@@ -38,9 +38,9 @@ interface MeasurementTableProps {
   experimentName: string;
 }
 
-const formatReadOnlyValue = (value: any) => {
-  if (value === null || value === undefined || isNaN(value)) return "-";
-  return Number(value).toFixed(3);
+const formatReadOnlyValue = (value: number | null | undefined) => {
+  if (value === null || value === undefined || Number.isNaN(value)) return "-";
+  return value.toFixed(3);
 }
 
 const ColumnHeaderLabel = ({ label, help }: { label: string, help?: { title: string, description: string } }) => {
