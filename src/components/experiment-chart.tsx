@@ -223,10 +223,20 @@ export function ExperimentChart({ data: initialData, xLabel: initialXLabel, yLab
 
     const dataXDomain = useMemo(() => {
         if (transformedData.length === 0) return [0, 1];
-        const xValues = transformedData.map(p => p.x).filter(x => x != null && isFinite(x));
-        if (xValues.length === 0) return [0, 1];
-        const min = Math.min(...xValues);
-        const max = Math.max(...xValues);
+        let min = Infinity;
+        let max = -Infinity;
+        let hasValues = false;
+
+        for (let i = 0; i < transformedData.length; i++) {
+            const x = transformedData[i].x;
+            if (x != null && isFinite(x)) {
+                if (x < min) min = x;
+                if (x > max) max = x;
+                hasValues = true;
+            }
+        }
+
+        if (!hasValues) return [0, 1];
         const buffer = (max - min) * 0.05 || 0.1;
         return [min - buffer, max + buffer];
     }, [transformedData]);
@@ -238,12 +248,29 @@ export function ExperimentChart({ data: initialData, xLabel: initialXLabel, yLab
     
     const dataYDomain = useMemo(() => {
         if (transformedData.length === 0) return [0, 1];
-        const yValues = transformedData.map(p => p.y).filter(y => y != null && isFinite(y));
-        const yFitValues = currentFit ? transformedData.map(p => p.y_fit).filter(y => y != null && isFinite(y)) as number[] : [];
-        const allYValues = [...yValues, ...yFitValues];
-        if (allYValues.length === 0) return [0, 1];
-        const min = Math.min(...allYValues);
-        const max = Math.max(...allYValues);
+        let min = Infinity;
+        let max = -Infinity;
+        let hasValues = false;
+
+        for (let i = 0; i < transformedData.length; i++) {
+            const p = transformedData[i];
+            const y = p.y;
+            if (y != null && isFinite(y)) {
+                if (y < min) min = y;
+                if (y > max) max = y;
+                hasValues = true;
+            }
+            if (currentFit) {
+                const yFit = p.y_fit;
+                if (yFit != null && isFinite(yFit)) {
+                    if (yFit < min) min = yFit;
+                    if (yFit > max) max = yFit;
+                    hasValues = true;
+                }
+            }
+        }
+
+        if (!hasValues) return [0, 1];
         const buffer = (max - min) * 0.05 || 0.1;
         return [min - buffer, max + buffer];
     }, [transformedData, currentFit]);
