@@ -153,12 +153,32 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
     const coeffsMatrix = multiply(covMatrix, XTY) as Matrix;
 
     const coeffs = coeffsMatrix.toArray().flat() as number[];
-    const y_pred_for_residuals = x.map(xi => sum(coeffs.map((c, p) => c * (xi ** p))) as number);
-    const residuals = y.map((yi, i) => yi - y_pred_for_residuals[i]);
     
-    const ss_res = sum(residuals.map(r => r**2)) as number;
-    const y_mean = mean(y);
-    const ss_tot = sum(y.map(yi => (yi - y_mean)**2)) as number;
+    let ss_res = 0;
+    let ss_tot = 0;
+    let sum_y = 0;
+
+    for (let i = 0; i < n; i++) {
+      sum_y += y[i];
+    }
+    const y_mean = sum_y / n;
+
+    for (let i = 0; i < n; i++) {
+      const xi = x[i];
+      const yi = y[i];
+
+      let y_pred = 0;
+      let current_term = 1;
+      for (let p = 0; p <= degree; p++) {
+        y_pred += coeffs[p] * current_term;
+        current_term *= xi;
+      }
+
+      const r = yi - y_pred;
+      ss_res += r * r;
+      const d_tot = yi - y_mean;
+      ss_tot += d_tot * d_tot;
+    }
     
     const R2 = ss_tot > 0 ? 1 - (ss_res / ss_tot) : 1;
 
