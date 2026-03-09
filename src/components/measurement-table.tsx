@@ -5,6 +5,7 @@ import React from "react";
 import { PlusCircle, TestTube, Trash2, XCircle, Info } from "lucide-react";
 
 import type { FormulaInput, MeasurementRow } from "@/lib/types";
+import { sanitizeHtml } from "@/lib/security";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -46,7 +47,7 @@ const formatReadOnlyValue = (value: number | null | undefined) => {
 const ColumnHeaderLabel = ({ label, help }: { label: string, help?: { title: string, description: string } }) => {
   return (
       <div className="flex items-center justify-center gap-2">
-           <span dangerouslySetInnerHTML={{ __html: label }} />
+           <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(label) }} />
            {help && (
               <Dialog>
                   <DialogTrigger asChild>
