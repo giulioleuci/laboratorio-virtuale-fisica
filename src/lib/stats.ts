@@ -234,10 +234,23 @@ export function rationalRegression(x: number[], y: number[]): RationalRegression
   try {
     const result = levenbergMarquardt(data, fn, { initialValues });
     const coeffs = result.parameterValues;
-    const y_pred = x.map(fn(coeffs));
-    const y_mean = mean(y);
-    const ss_tot = sum(y.map((yi) => (yi - y_mean) ** 2)) as number;
-    const ss_res = sum(y.map((yi, i) => (yi - y_pred[i]) ** 2)) as number;
+
+    let ss_tot = 0;
+    let ss_res = 0;
+    let sum_y = 0;
+
+    for (let i = 0; i < n; i++) {
+      sum_y += y[i];
+    }
+    const y_mean = sum_y / n;
+
+    const evalFn = fn(coeffs);
+    for (let i = 0; i < n; i++) {
+      const yi = y[i];
+      const yi_pred = evalFn(x[i]);
+      ss_tot += (yi - y_mean) ** 2;
+      ss_res += (yi - yi_pred) ** 2;
+    }
     const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
 
     return { coeffs, R2 };
