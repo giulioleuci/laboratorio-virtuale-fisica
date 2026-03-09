@@ -79,17 +79,42 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const slope = sum_xy_w / sum_x2_w;
     const sigma_slope = Math.sqrt(1 / sum_x2_w);
     
-    const y_pred = x.map(xi => slope * xi);
-    const residuals = y.map((yi, i) => yi - y_pred[i]);
-    const y_mean = mean(y);
-    const ss_tot = sum(y.map(yi => (yi - y_mean)**2)) as number;
-    const ss_res = sum(residuals.map(r => r**2)) as number;
-    const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
+    let sum_y = 0;
+    for (let i = 0; i < n; i++) sum_y += y[i];
+    const y_mean = sum_y / n;
 
+    let ss_res = 0;
+    let ss_tot = 0;
     let chi2: number | null = null;
-    if(sigma_y && sigma_y.some(s => s && s>0)) {
-      chi2 = sum(residuals.map((r, i) => (sigma_y[i] && sigma_y[i]! > 0 ? (r / sigma_y[i]!)**2 : 0))) as number;
+    let has_sigma = false;
+
+    if (sigma_y) {
+      for (let i = 0; i < n; i++) {
+        if (sigma_y[i] && sigma_y[i]! > 0) {
+          has_sigma = true;
+          chi2 = 0;
+          break;
+        }
+      }
     }
+
+    for (let i = 0; i < n; i++) {
+      const y_pred_i = slope * x[i];
+      const r = y[i] - y_pred_i;
+      ss_res += r * r;
+
+      const d_tot = y[i] - y_mean;
+      ss_tot += d_tot * d_tot;
+
+      if (has_sigma) {
+        const sy = sigma_y![i];
+        if (sy && sy > 0) {
+          chi2! += (r / sy) * (r / sy);
+        }
+      }
+    }
+
+    const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
 
     return { slope, intercept: 0, sigma_slope, sigma_intercept: 0, R2, chi2_reduced: chi2 ? chi2 / (n - 1) : null };
   }
@@ -113,17 +138,42 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const sigma_intercept = Math.sqrt(covMatrix.get([0, 0]) as number);
     const sigma_slope = Math.sqrt(covMatrix.get([1, 1]) as number);
 
-    const y_pred = x.map(xi => slope * xi + intercept);
-    const residuals = y.map((yi, i) => yi - y_pred[i]);
-    const y_mean = mean(y);
-    const ss_tot = sum(y.map(yi => (yi - y_mean)**2)) as number;
-    const ss_res = sum(residuals.map(r => r**2)) as number;
-    const R2 = ss_tot > 0 ? 1 - (ss_res / ss_tot) : 1;
-    
+    let sum_y = 0;
+    for (let i = 0; i < n; i++) sum_y += y[i];
+    const y_mean = sum_y / n;
+
+    let ss_res = 0;
+    let ss_tot = 0;
     let chi2: number | null = null;
-    if(sigma_y && sigma_y.some(s => s && s>0)) {
-      chi2 = sum(residuals.map((r, i) => (sigma_y[i] && sigma_y[i]! > 0 ? (r / sigma_y[i]!)**2 : 0))) as number;
+    let has_sigma = false;
+
+    if (sigma_y) {
+      for (let i = 0; i < n; i++) {
+        if (sigma_y[i] && sigma_y[i]! > 0) {
+          has_sigma = true;
+          chi2 = 0;
+          break;
+        }
+      }
     }
+
+    for (let i = 0; i < n; i++) {
+      const y_pred_i = slope * x[i] + intercept;
+      const r = y[i] - y_pred_i;
+      ss_res += r * r;
+
+      const d_tot = y[i] - y_mean;
+      ss_tot += d_tot * d_tot;
+
+      if (has_sigma) {
+        const sy = sigma_y![i];
+        if (sy && sy > 0) {
+          chi2! += (r / sy) * (r / sy);
+        }
+      }
+    }
+
+    const R2 = ss_tot > 0 ? 1 - (ss_res / ss_tot) : 1;
 
     return { slope, intercept, sigma_slope, sigma_intercept, R2, chi2_reduced: chi2 && (n-2 > 0) ? chi2 / (n - 2) : null };
   } catch (e) {
