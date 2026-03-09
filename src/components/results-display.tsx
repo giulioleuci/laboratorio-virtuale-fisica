@@ -2,6 +2,7 @@
 "use client";
 import { useCallback, memo } from "react";
 import type { Formula } from "@/lib/types";
+import { sanitizeHtml } from "@/lib/security";
 import { Skeleton } from "./ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { useSettings } from "@/contexts/settings-context";
@@ -18,7 +19,7 @@ interface ResultsDisplayProps {
 const ResultRow = memo(function ResultRow({ label, value, unit, htmlLabel }: { label?: string, value: string | React.ReactNode, unit?: string, htmlLabel?: string }) {
     return <div className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
         <span className="text-muted-foreground flex items-center gap-2">
-            {htmlLabel ? <span dangerouslySetInnerHTML={{ __html: htmlLabel }} /> : label}
+            {htmlLabel ? <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(htmlLabel) }} /> : label}
         </span>
         <span className="font-mono text-lg">{value} {unit}</span>
     </div>
@@ -97,7 +98,7 @@ const CustomOpticsResultRenderer = memo(function CustomOpticsResultRenderer({ re
     return (
          <div className="space-y-4">
             <ResultRow
-                htmlLabel={`${formula.result.label || 'Valore Finale'}`}
+                htmlLabel={formula.result.label || 'Valore Finale'}
                 value={formatValue(value_nm, sigma_nm)}
                 unit={formula.result.unit}
             />
@@ -356,7 +357,7 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
   return (
     <div className="space-y-4">
       <ResultRow 
-        htmlLabel={`${formula.result.label || 'Valore Finale'}`}
+        htmlLabel={formula.result.label || 'Valore Finale'}
         value={formatValue(value, sigma)}
         unit={formula.result.unit}
       />
