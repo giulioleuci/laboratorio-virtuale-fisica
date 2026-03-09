@@ -25,8 +25,14 @@ export function calculateAndPropagate(
 ): { value: number; sigma: number } | null {
   try {
     const node = parse(formula);
-    const values = Object.entries(variables).reduce((acc, [k, v]) => ({ ...acc, [k]: v.value }), {});
-    const sigmas = Object.entries(variables).reduce((acc, [k, v]) => ({ ...acc, [k]: v.sigma }), {});
+    const values: { [key: string]: number } = {};
+    const sigmas: { [key: string]: number } = {};
+
+    for (const k in variables) {
+      const v = variables[k];
+      values[k] = v.value;
+      sigmas[k] = v.sigma;
+    }
 
     const value = node.evaluate(values);
 
