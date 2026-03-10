@@ -71,9 +71,12 @@ export default function ErrorPropagationPageClient({ id }: { id: string }) {
 
   const handleFormulaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormulaString(e.target.value);
-    const newVariables = (e.target.value.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || [])
-      .filter((v, i, a) => a.indexOf(v) === i)
-      .reduce((acc, v) => ({ ...acc, [v]: { value: "", sigma: "" } }), {});
+    const newVariables = (e.target.value.match(/[a-zA-Z_][a-zA-Z0-9_]*/g) || []).reduce<Variables>((acc, v) => {
+      if (!acc[v]) {
+        acc[v] = { value: "", sigma: "" };
+      }
+      return acc;
+    }, {});
     setVariables(newVariables);
   };
 
