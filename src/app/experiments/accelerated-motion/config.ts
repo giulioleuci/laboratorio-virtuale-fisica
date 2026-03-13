@@ -57,24 +57,20 @@ const getAcceleratedMotionChartInfo = (
         xAxisUnit === 's' && yAxisUnit === 'm' && showRegression) {
         
         const { x0, v0, a } = results.details;
-        console.log('Polynomial fit calculation:', { x0: x0.value, v0: v0.value, a: a.value });
         
         // Calculate y_fit for each data point using the parabola: x(t) = x0 + v0*t + (1/2)*a*t²
         chartData.forEach(point => {
             const t = point.x; // time
             point.y_fit = x0.value + v0.value * t + 0.5 * a.value * t * t;
-            console.log(`Point t=${t}, y=${point.y}, y_fit=${point.y_fit}`);
         });
         
         // Provide a dummy fit object so the chart component renders the regression line
         fit = { slope: 0, intercept: 0 };
-        console.log('Polynomial fit enabled, dummy fit object created');
     }
     // Handle linear fit (fit_linear method)
     else if (results?.details?.fit && xAxisUnit === 's' && yAxisUnit === 'm' && showRegression && isLinearFit) {
         
         const linearFit = results.details.fit;
-        console.log('Linear fit calculation:', { slope: linearFit.slope, intercept: linearFit.intercept });
         
         // For linear fit, the chart component can handle it directly
         // The fit is already in T² vs X format from the calculation
@@ -82,24 +78,7 @@ const getAcceleratedMotionChartInfo = (
             slope: linearFit.slope,
             intercept: linearFit.intercept
         };
-        console.log('Linear fit enabled');
     }
-    else {
-        console.log('Fit not enabled:', {
-            hasResults: !!results?.details,
-            hasPolyCoeffs: !!(results?.details?.x0 && results?.details?.v0 && results?.details?.a),
-            hasLinearFit: !!results?.details?.fit,
-            isLinearFit,
-            calculationMethod,
-            xAxisUnit,
-            yAxisUnit,
-            showRegression
-        });
-    }
-
-    console.log('Chart data generated:', chartData.length, 'points');
-    console.log('Final fit object:', fit);
-    console.log('Chart info:', { xLabel, yLabel, hasData: chartData.length > 0, hasFit: !!fit });
 
     return {
         data: chartData,
