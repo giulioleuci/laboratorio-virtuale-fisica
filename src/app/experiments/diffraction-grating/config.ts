@@ -1,9 +1,6 @@
 
 import type { Formula, ProcessedInput, MeasurementRow, ModeState } from '@/lib/types';
 import { weightedMean } from '@/lib/stats';
-import { mean } from 'mathjs';
-
-const toRadians = (deg: number) => deg * (Math.PI / 180);
 
 export const diffractionGratingFormula: Formula = {
     id: 'diffraction-grating',
