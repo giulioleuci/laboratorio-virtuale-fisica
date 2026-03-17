@@ -31,6 +31,15 @@ interface ExperimentChartProps extends Omit<ChartInfo, 'customOptions'> {
     experimentName: string;
 }
 
+interface ChartComponentProps {
+    fit: { slope: number; intercept: number } | null | undefined;
+    chartState: any;
+    transformedData: any[];
+    xDomain: any;
+    yDomain: any;
+    tickFormatter: (precision: number) => (value: any) => any;
+}
+
 const ChartComponent = ({
     fit,
     chartState,
@@ -38,7 +47,7 @@ const ChartComponent = ({
     xDomain,
     yDomain,
     tickFormatter,
-}: any) => (
+}: ChartComponentProps) => (
     <ResponsiveContainer width="100%" height={400}>
         <ComposedChart
             margin={{ top: 20, right: 20, bottom: 40, left: 30 }}
@@ -111,7 +120,8 @@ const ChartComponent = ({
     </ResponsiveContainer>
 );
 
-export function ExperimentChart({ data: initialData, xLabel: initialXLabel, yLabel: initialYLabel, fit, CustomControls, customControlsProps, experimentName }: ExperimentChartProps) {
+export function ExperimentChart(props: ExperimentChartProps) {
+    const { data: initialData, xLabel: initialXLabel, yLabel: initialYLabel, fit, CustomControls, customControlsProps, experimentName } = props;
     const printRef = useRef<HTMLDivElement>(null);
     
     const getInitialChartState = useCallback(() => ({
