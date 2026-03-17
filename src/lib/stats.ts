@@ -79,9 +79,7 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const slope = sum_xy_w / sum_x2_w;
     const sigma_slope = Math.sqrt(1 / sum_x2_w);
     
-    let sum_y = 0;
-    for (let i = 0; i < n; i++) sum_y += y[i];
-    const y_mean = sum_y / n;
+    const y_mean = mean(y);
 
     let ss_res = 0;
     let ss_tot = 0;
@@ -138,9 +136,7 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const sigma_intercept = Math.sqrt(covMatrix.get([0, 0]) as number);
     const sigma_slope = Math.sqrt(covMatrix.get([1, 1]) as number);
 
-    let sum_y = 0;
-    for (let i = 0; i < n; i++) sum_y += y[i];
-    const y_mean = sum_y / n;
+    const y_mean = mean(y);
 
     let ss_res = 0;
     let ss_tot = 0;
@@ -206,12 +202,7 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
     
     let ss_res = 0;
     let ss_tot = 0;
-    let sum_y = 0;
-
-    for (let i = 0; i < n; i++) {
-      sum_y += y[i];
-    }
-    const y_mean = sum_y / n;
+    const y_mean = mean(y);
 
     for (let i = 0; i < n; i++) {
       const xi = x[i];
@@ -287,12 +278,7 @@ export function rationalRegression(x: number[], y: number[]): RationalRegression
 
     let ss_tot = 0;
     let ss_res = 0;
-    let sum_y = 0;
-
-    for (let i = 0; i < n; i++) {
-      sum_y += y[i];
-    }
-    const y_mean = sum_y / n;
+    const y_mean = mean(y);
 
     const evalFn = fn(coeffs);
     for (let i = 0; i < n; i++) {
