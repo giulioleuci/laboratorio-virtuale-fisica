@@ -1,3 +1,4 @@
+export {};
 const size = 10000;
 const x = Array.from({ length: size }, (_, i) => i);
 const y = Array.from({ length: size }, (_, i) => i * 2.5 + 1.5 + (Math.random() - 0.5));
