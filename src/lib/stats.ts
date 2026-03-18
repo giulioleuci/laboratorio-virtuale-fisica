@@ -51,9 +51,10 @@ export function stdErrMean(values: number[]): number {
   return sampleStdDev(filteredValues) / Math.sqrt(filteredValues.length);
 }
 
-export function calculateR2AndSsRes(y: number[], getPred: (i: number) => number): { R2: number; ss_res: number } {
+export function calculateRegressionMetrics(y: number[], getPred: (i: number) => number, sigma_y: (number | null | undefined)[] | null = null): { R2: number; ss_res: number; chi2: number | null } {
   let ss_res = 0;
   let ss_tot = 0;
+  let chi2: number | null = null;
   const y_mean = mean(y);
   const n = y.length;
 
@@ -63,10 +64,18 @@ export function calculateR2AndSsRes(y: number[], getPred: (i: number) => number)
 
     const d_tot = y[i] - y_mean;
     ss_tot += d_tot * d_tot;
+
+    if (sigma_y) {
+      const sy = sigma_y[i];
+      if (sy && sy > 0) {
+        if (chi2 === null) chi2 = 0;
+        chi2 += (r / sy) * (r / sy);
+      }
+    }
   }
 
   const R2 = ss_tot > 0 ? 1 - ss_res / ss_tot : 1;
-  return { R2, ss_res };
+  return { R2, ss_res, chi2 };
 }
 
 export interface LinearRegressionResult {
@@ -97,19 +106,7 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const slope = sum_xy_w / sum_x2_w;
     const sigma_slope = Math.sqrt(1 / sum_x2_w);
     
-    const { R2, ss_res } = calculateR2AndSsRes(y, i => slope * x[i]);
-
-    let chi2: number | null = null;
-    if (sigma_y) {
-      for (let i = 0; i < n; i++) {
-        const sy = sigma_y[i];
-        if (sy && sy > 0) {
-          if (chi2 === null) chi2 = 0;
-          const r = y[i] - slope * x[i];
-          chi2 += (r / sy) * (r / sy);
-        }
-      }
-    }
+    const { R2, ss_res, chi2 } = calculateRegressionMetrics(y, i => slope * x[i], sigma_y);
 
     return { slope, intercept: 0, sigma_slope, sigma_intercept: 0, R2, chi2_reduced: chi2 !== null ? chi2 / (n - 1) : null };
   }
@@ -133,19 +130,7 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
     const sigma_intercept = Math.sqrt(covMatrix.get([0, 0]) as number);
     const sigma_slope = Math.sqrt(covMatrix.get([1, 1]) as number);
 
-    const { R2, ss_res } = calculateR2AndSsRes(y, i => slope * x[i] + intercept);
-
-    let chi2: number | null = null;
-    if (sigma_y) {
-      for (let i = 0; i < n; i++) {
-        const sy = sigma_y[i];
-        if (sy && sy > 0) {
-          if (chi2 === null) chi2 = 0;
-          const r = y[i] - (slope * x[i] + intercept);
-          chi2 += (r / sy) * (r / sy);
-        }
-      }
-    }
+    const { R2, ss_res, chi2 } = calculateRegressionMetrics(y, i => slope * x[i] + intercept, sigma_y);
 
     return { slope, intercept, sigma_slope, sigma_intercept, R2, chi2_reduced: chi2 !== null && (n - 2 > 0) ? chi2 / (n - 2) : null };
   } catch (e) {
@@ -176,7 +161,7 @@ export function polynomialRegression(x: number[], y: number[], degree: number): 
 
     const coeffs = coeffsMatrix.toArray().flat() as number[];
 
-    const { R2, ss_res } = calculateR2AndSsRes(y, i => {
+    const { R2, ss_res } = calculateRegressionMetrics(y, i => {
       let y_pred = 0;
       let current_term = 1;
       const xi = x[i];
@@ -241,7 +226,7 @@ export function rationalRegression(x: number[], y: number[]): RationalRegression
     const coeffs = result.parameterValues;
 
     const evalFn = fn(coeffs);
-    const { R2 } = calculateR2AndSsRes(y, i => evalFn(x[i]));
+    const { R2 } = calculateRegressionMetrics(y, i => evalFn(x[i]));
 
     return { coeffs, R2 };
   } catch (e) {
