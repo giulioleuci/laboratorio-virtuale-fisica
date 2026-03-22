@@ -4,6 +4,7 @@ import { archimedesFormula } from '@/app/experiments/archimedes/config';
 import { freeFallFormula } from '@/app/experiments/free-fall/config';
 import { pendulumFormula } from '@/app/experiments/pendulum/config';
 import { hookesLawFormula } from '@/app/experiments/hookes-law/config';
+import { springGravityFormula } from '@/app/experiments/spring-gravity/config';
 import { uniformMotionFormula } from '@/app/experiments/uniform-motion/config';
 import { acceleratedMotionFormula } from '@/app/experiments/accelerated-motion/config';
 import { ohmsLawFormula } from '@/app/experiments/ohms-law/config';
@@ -37,6 +38,7 @@ export const formulas: Formula[] = [
     freeFallFormula,
     archimedesFormula,
     hookesLawFormula,
+    springGravityFormula,
     uniformMotionFormula,
     acceleratedMotionFormula,
     ohmsLawFormula,
