@@ -18,6 +18,16 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
     const { toast } = useToast();
     const [isProcessing, setIsProcessing] = React.useState(false);
 
+    const handleImportError = (error?: unknown, title?: string, description?: string) => {
+        if (error) console.error("Error processing file:", error);
+        toast({
+            variant: 'destructive',
+            title: title || 'Errore di importazione',
+            description: description || 'Non è stato possibile leggere il file. Assicurati che sia un formato valido.',
+        });
+        setIsProcessing(false);
+    };
+
     const findColumnId = (header: string): string | null => {
         const cleanHeader = header.trim().toLowerCase();
         
@@ -130,35 +140,16 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
                         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                         
                         processData(jsonData as any[][]);
-                    } catch (error) {
-                        console.error("Error processing file:", error);
-                        toast({
-                            variant: 'destructive',
-                            title: 'Errore di importazione',
-                            description: `Non è stato possibile leggere il file. Assicurati che sia un formato valido.`,
-                        });
-                    } finally {
                         setIsProcessing(false);
+                    } catch (error) {
+                        handleImportError(error);
                     }
                 }, 50);
             } catch (error) {
-                console.error("Error processing file:", error);
-                toast({
-                    variant: 'destructive',
-                    title: 'Errore di importazione',
-                    description: `Non è stato possibile leggere il file. Assicurati che sia un formato valido.`,
-                });
-                setIsProcessing(false);
+                handleImportError(error);
             }
         };
-        reader.onerror = () => {
-             toast({
-                variant: 'destructive',
-                title: 'Errore di lettura',
-                description: 'Impossibile leggere il file selezionato.',
-            });
-            setIsProcessing(false);
-        }
+        reader.onerror = () => handleImportError(undefined, 'Errore di lettura', 'Impossibile leggere il file selezionato.');
         reader.readAsBinaryString(file);
         
         // Reset file input to allow re-uploading the same file
