@@ -4,6 +4,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import type { FormulaCategory } from '@/lib/types';
 import { CATEGORIES } from '@/lib/formulas';
+import { settingsSchema } from '@/lib/settings-schema';
 
 type PrecisionMode = "auto" | "fixed";
 
@@ -43,6 +44,7 @@ const defaultSettings: Settings = {
   categoryColors: defaultCategoryColors,
 };
 
+
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
@@ -56,16 +58,24 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
       try {
         const item = window.localStorage.getItem('app-settings');
         if (item) {
-          const savedSettings = JSON.parse(item);
-          const mergedSettings = {
-            ...defaultSettings,
-            ...savedSettings,
-            categoryColors: {
-              ...defaultCategoryColors,
-              ...(savedSettings.categoryColors || {}),
-            }
-          };
-          setSettings(mergedSettings);
+          const rawSettings = JSON.parse(item);
+          const validation = settingsSchema.safeParse(rawSettings);
+
+          if (validation.success) {
+            const savedSettings = validation.data;
+            const mergedSettings = {
+              ...defaultSettings,
+              ...savedSettings,
+              categoryColors: {
+                ...defaultCategoryColors,
+                ...(savedSettings.categoryColors || {}),
+              }
+            } as Settings;
+            setSettings(mergedSettings);
+          } else {
+            console.error("Invalid settings found in localStorage, using defaults", validation.error);
+            setSettings(defaultSettings);
+          }
         }
       } catch (error) {
         console.error("Failed to parse settings from localStorage", error);
