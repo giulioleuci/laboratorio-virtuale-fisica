@@ -2,12 +2,12 @@
 "use client";
 import { useCallback, memo } from "react";
 import type { Formula } from "@/lib/types";
-import { sanitizeHtml } from "@/lib/security";
 import { Skeleton } from "./ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { useSettings } from "@/contexts/settings-context";
 import { Info } from "lucide-react";
 import { DownloadAnalysisButton } from "./download-analysis-button";
+import { SafeHtml } from "./safe-html";
 
 interface ResultsDisplayProps {
   results: any;
@@ -19,7 +19,7 @@ interface ResultsDisplayProps {
 const ResultRow = memo(function ResultRow({ label, value, unit, htmlLabel }: { label?: string, value: string | React.ReactNode, unit?: string, htmlLabel?: string }) {
     return <div className="flex justify-between items-center py-2 border-b border-border/50 last:border-b-0">
         <span className="text-muted-foreground flex items-center gap-2">
-            {htmlLabel ? <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(htmlLabel) }} /> : label}
+            {htmlLabel ? <SafeHtml html={htmlLabel} /> : label}
         </span>
         <span className="font-mono text-lg">{value} {unit}</span>
     </div>

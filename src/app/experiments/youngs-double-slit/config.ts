@@ -76,8 +76,8 @@ export const youngsDoubleSlitFormula: Formula = {
         
         if (d === 0 || L === 0 || m === 0) return { details: { error: "Parametri (d, L, m) non possono essere zero." } };
 
-        let lambda_values: number[] = [];
-        let sigma_lambda_values: number[] = [];
+        const lambda_values: number[] = [];
+        const sigma_lambda_values: number[] = [];
         
         rawData.forEach(row => {
             let y_m = 0, sigma_y_m = 0;

@@ -5,7 +5,6 @@ import React from "react";
 import { PlusCircle, TestTube, Trash2, XCircle, Info } from "lucide-react";
 
 import type { FormulaInput, MeasurementRow } from "@/lib/types";
-import { sanitizeHtml } from "@/lib/security";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,6 +21,7 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { DownloadTableButton } from "./download-table-button";
 import { ImportDataButton } from "./import-data-button";
+import { SafeHtml } from "./safe-html";
 import { 
     Dialog,
     DialogContent,
@@ -47,7 +47,7 @@ const formatReadOnlyValue = (value: number | null | undefined) => {
 const ColumnHeaderLabel = ({ label, help }: { label: string, help?: { title: string, description: string } }) => {
   return (
       <div className="flex items-center justify-center gap-2">
-           <span dangerouslySetInnerHTML={{ __html: sanitizeHtml(label) }} />
+           <SafeHtml html={label} />
            {help && (
               <Dialog>
                   <DialogTrigger asChild>
