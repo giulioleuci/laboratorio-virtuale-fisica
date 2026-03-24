@@ -34,25 +34,33 @@ export const snellsLawFormula: Formula = {
         const toRadians = (deg: number) => deg * (Math.PI / 180);
 
         if (modes.calculation_method === 'average') {
-            const n2_values = rawData.map(row => {
-                const theta_i = row.theta_i ?? null;
-                const theta_r = row.theta_r ?? null;
-                if (theta_i == null || theta_r == null || theta_r === 0) return null;
-                return n1 * Math.sin(toRadians(theta_i)) / Math.sin(toRadians(theta_r));
-            }).filter(n => n !== null) as number[];
+            const n2_values: number[] = [];
+            const sigmas: number[] = [];
+            const n = rawData.length;
+
+            for (let i = 0; i < n; i++) {
+                const row = rawData[i];
+                const { theta_i, sigma_theta_i, theta_r, sigma_theta_r } = row;
+
+                if (theta_i != null && theta_r != null && theta_r !== 0 && sigma_theta_i != null && sigma_theta_r != null) {
+                    const rad_i = toRadians(theta_i);
+                    const rad_r = toRadians(theta_r);
+                    const sin_i = Math.sin(rad_i);
+                    const sin_r = Math.sin(rad_r);
+                    const cos_i = Math.cos(rad_i);
+                    const cos_r = Math.cos(rad_r);
+
+                    n2_values.push(n1 * sin_i / sin_r);
+
+                    const d_n2_d_theta_i = n1 * cos_i / sin_r;
+                    const d_n2_d_theta_r = -n1 * sin_i * cos_r / (sin_r * sin_r);
+
+                    const sigma_n2_sq = (d_n2_d_theta_i * toRadians(sigma_theta_i))**2 + (d_n2_d_theta_r * toRadians(sigma_theta_r))**2;
+                    sigmas.push(Math.sqrt(sigma_n2_sq));
+                }
+            }
 
             if (n2_values.length === 0) return { details: { error: "Dati insufficienti." } };
-            
-            const sigmas = rawData.map(row => {
-                const { theta_i, sigma_theta_i, theta_r, sigma_theta_r } = row;
-                if (theta_i == null || theta_r == null || sigma_theta_i == null || sigma_theta_r == null) return 0;
-                const n2 = n1 * Math.sin(toRadians(theta_i)) / Math.sin(toRadians(theta_r));
-                const d_n2_d_theta_i = n1 * Math.cos(toRadians(theta_i)) / Math.sin(toRadians(theta_r));
-                const d_n2_d_theta_r = -n1 * Math.sin(toRadians(theta_i)) * Math.cos(toRadians(theta_r)) / Math.sin(toRadians(theta_r))**2;
-                
-                const sigma_n2_sq = (d_n2_d_theta_i * toRadians(sigma_theta_i))**2 + (d_n2_d_theta_r * toRadians(sigma_theta_r))**2;
-                return Math.sqrt(sigma_n2_sq);
-            });
 
             const { wMean, sigmaWMean } = weightedMean(n2_values, sigmas);
 
@@ -60,14 +68,22 @@ export const snellsLawFormula: Formula = {
         }
 
         // mode 'fit'
-        const sin_theta_i = rawData.map(r => r.theta_i != null ? Math.sin(toRadians(r.theta_i)) : null).filter(v => v !== null) as number[];
-        const sin_theta_r = rawData.map(r => r.theta_r != null ? Math.sin(toRadians(r.theta_r)) : null).filter(v => v !== null) as number[];
-        
-        // Propagate error: sigma(sin(theta)) = |cos(theta)| * sigma(theta) in radians
-        const sigma_sin_theta_r = rawData.map(r => {
-            if (r.theta_r == null || r.sigma_theta_r == null) return null;
-            return Math.abs(Math.cos(toRadians(r.theta_r))) * toRadians(r.sigma_theta_r);
-        }).filter(v => v !== null) as (number | null | undefined)[];
+        const sin_theta_i: number[] = [];
+        const sin_theta_r: number[] = [];
+        const sigma_sin_theta_r: number[] = [];
+        const n_fit = rawData.length;
+
+        for (let i = 0; i < n_fit; i++) {
+            const row = rawData[i];
+            const { theta_i, theta_r, sigma_theta_r } = row;
+
+            if (theta_i != null && theta_r != null && sigma_theta_r != null) {
+                sin_theta_i.push(Math.sin(toRadians(theta_i)));
+                const rad_r = toRadians(theta_r);
+                sin_theta_r.push(Math.sin(rad_r));
+                sigma_sin_theta_r.push(Math.abs(Math.cos(rad_r)) * toRadians(sigma_theta_r));
+            }
+        }
 
         if (sin_theta_i.length < 2 || sin_theta_r.length < 2) {
             return { details: { error: "Dati insufficienti per il fit lineare." } };
