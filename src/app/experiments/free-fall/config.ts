@@ -44,7 +44,7 @@ const getFreeFallSpeedTimeChartInfo = (
     let fit;
     if (results?.details?.fit) {
         let slope = results.details.fit.slope; // Original fit is v(m/s) vs t(s), so slope is g
-        let intercept = results.details.fit.intercept;
+        const intercept = results.details.fit.intercept;
         if (xAxisUnit === 'ms') {
             slope = slope / 1000; // m/s^2 -> m/ms^2
         }
