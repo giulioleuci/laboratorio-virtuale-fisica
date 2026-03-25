@@ -4,12 +4,12 @@ import assert from 'node:assert';
 /**
  * Simplified version of the hook for testing the logic without React dependencies
  */
-function debouncedLogic<T extends (...args: any[]) => any>(
-  callback: T,
+function debouncedLogic<Args extends unknown[]>(
+  callback: (...args: Args) => void,
   delay: number,
   timeoutRef: { current: NodeJS.Timeout | undefined }
 ) {
-  return (...args: any[]) => {
+  return (...args: Args) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
