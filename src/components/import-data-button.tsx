@@ -57,8 +57,8 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
     };
 
 
-    const processData = (data: any[][]) => {
-        if (data.length < 2) {
+    const processData = (data: unknown[][]) => {
+        if (!Array.isArray(data) || data.length < 2) {
             toast({
                 variant: 'destructive',
                 title: 'Errore nel file',
@@ -139,7 +139,7 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
                         const worksheet = workbook.Sheets[sheetName];
                         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                         
-                        processData(jsonData as any[][]);
+                        processData(jsonData as unknown[][]);
                         setIsProcessing(false);
                     } catch (error) {
                         handleImportError(error);
