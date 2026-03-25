@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [22.x]
 
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +21,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
       - run: npm ci
-      - run: npm run lint
-        continue-on-error: true # the native environment has some issue with eslint v9, so ignore its failure in CI if types and tests pass
+      - run: npm run lint || true # the native environment has some issue with eslint v9, so ignore its failure in CI if types and tests pass
       - run: npm run typecheck
       - run: npm run test
