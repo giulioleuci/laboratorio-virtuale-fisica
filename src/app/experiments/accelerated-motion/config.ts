@@ -177,8 +177,18 @@ export const acceleratedMotionFormula: Formula = {
         }
         
         // mode 'fit_polynomial' or 'fit_linear'
-        const tValues = rawData.map(r => r.t).filter(v => v !== null) as number[];
-        const xValues = rawData.map(r => r.x).filter(v => v !== null) as number[];
+        const tValues: number[] = [];
+        const xValues: number[] = [];
+        const xSigmas: (number | null | undefined)[] = [];
+
+        for (let i = 0; i < rawData.length; i++) {
+            const row = rawData[i];
+            if (row.t !== null && row.t !== undefined && row.x !== null && row.x !== undefined) {
+                tValues.push(row.t);
+                xValues.push(row.x);
+                xSigmas.push(row.sigma_x);
+            }
+        }
         
         if (tValues.length < 3 && modes.calculation_method === 'fit_polynomial') {
             return { details: { error: "Dati insufficienti per il fit parabolico (min 3 punti)." } };
@@ -218,8 +228,6 @@ export const acceleratedMotionFormula: Formula = {
             // For uniformly accelerated motion: x = x₀ + v₀t + ½at²
             // This is NOT linear in t² unless v₀ = 0
             // We'll use a different approach: fit x vs t with linear regression to get v₀ and a
-            
-            const xSigmas = rawData.map(r => r.sigma_x).filter(v => v !== null) as (number | null | undefined)[];
             
             // For comparison, let's also do the t² fit as originally intended
             const tSquaredValues = tValues.map(t => t * t);
