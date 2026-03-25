@@ -1,16 +1,14 @@
 
 "use client";
 import { useCallback, memo } from "react";
-import type { Formula } from "@/lib/types";
+import type { Formula, CalculationResult, ModeState } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
 import { useSettings } from "@/contexts/settings-context";
-import { Info } from "lucide-react";
 import { DownloadAnalysisButton } from "./download-analysis-button";
 import { SafeHtml } from "./safe-html";
 
 interface ResultsDisplayProps {
-  results: any;
+  results: CalculationResult | null;
   formula: Formula;
   isLoading: boolean;
   experimentName: string;
@@ -25,7 +23,7 @@ const ResultRow = memo(function ResultRow({ label, value, unit, htmlLabel }: { l
     </div>
 });
 
-const CustomArchimedesRenderer = memo(function CustomArchimedesRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomArchimedesRenderer = memo(function CustomArchimedesRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.B_exp || !results.B_teo) return null;
   const { B_exp, B_teo } = results;
   
@@ -37,7 +35,7 @@ const CustomArchimedesRenderer = memo(function CustomArchimedesRenderer({ result
   );
 });
 
-const CustomNewtonsSecondLawRenderer = memo(function CustomNewtonsSecondLawRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomNewtonsSecondLawRenderer = memo(function CustomNewtonsSecondLawRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.a_teo || !results.a_exp) return null;
   const { a_teo, a_exp } = results;
   
@@ -49,7 +47,7 @@ const CustomNewtonsSecondLawRenderer = memo(function CustomNewtonsSecondLawRende
   );
 });
 
-const CustomMechanicalEnergyRenderer = memo(function CustomMechanicalEnergyRenderer({ results, formatValue, modes }: { results: any, formatValue: (v?: number, s?: number) => string, modes: any }) {
+const CustomMechanicalEnergyRenderer = memo(function CustomMechanicalEnergyRenderer({ results, formatValue, modes }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string, modes: ModeState }) {
   if (!results.delta_K || !results.Work) return null;
   const { delta_K, Work, energy_difference } = results;
   
@@ -64,7 +62,7 @@ const CustomMechanicalEnergyRenderer = memo(function CustomMechanicalEnergyRende
   );
 });
 
-const CustomKirchhoffsCurrentLawRenderer = memo(function CustomKirchhoffsCurrentLawRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomKirchhoffsCurrentLawRenderer = memo(function CustomKirchhoffsCurrentLawRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.sum_incoming || !results.sum_outgoing || !results.algebraic_sum) return null;
   const { sum_incoming, sum_outgoing, algebraic_sum } = results;
   
@@ -77,7 +75,7 @@ const CustomKirchhoffsCurrentLawRenderer = memo(function CustomKirchhoffsCurrent
   );
 });
 
-const CustomSecondKindLeverRenderer = memo(function CustomSecondKindLeverRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomSecondKindLeverRenderer = memo(function CustomSecondKindLeverRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.M_motore || !results.M_resistente) return null;
   const { M_motore, M_resistente } = results;
   const differenza = results["Differenza |Mₘ - Mᵣ|"];
@@ -91,10 +89,10 @@ const CustomSecondKindLeverRenderer = memo(function CustomSecondKindLeverRendere
   );
 });
 
-const CustomOpticsResultRenderer = memo(function CustomOpticsResultRenderer({ results, formatValue, formula }: { results: any, formatValue: (v?: number, s?: number) => string, formula: Formula }) {
+const CustomOpticsResultRenderer = memo(function CustomOpticsResultRenderer({ results, formatValue, formula }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string, formula: Formula }) {
     if (results.value === undefined || results.value === null) return null;
     const value_nm = results.value * 1e9;
-    const sigma_nm = results.sigma * 1e9;
+    const sigma_nm = results.sigma !== undefined ? results.sigma * 1e9 : undefined;
     return (
          <div className="space-y-4">
             <ResultRow
@@ -106,7 +104,7 @@ const CustomOpticsResultRenderer = memo(function CustomOpticsResultRenderer({ re
     );
 });
 
-const CustomAbsoluteRelativeErrorsRenderer = memo(function CustomAbsoluteRelativeErrorsRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomAbsoluteRelativeErrorsRenderer = memo(function CustomAbsoluteRelativeErrorsRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   const erroreAssoluto = results["Errore assoluto"];
   const erroreRelativo = results["Errore relativo"];
   const errorePercentuale = results["Errore percentuale"];
@@ -122,7 +120,7 @@ const CustomAbsoluteRelativeErrorsRenderer = memo(function CustomAbsoluteRelativ
   );
 });
 
-const CustomCompatibilityEvaluationRenderer = memo(function CustomCompatibilityEvaluationRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomCompatibilityEvaluationRenderer = memo(function CustomCompatibilityEvaluationRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   const differenza = results["Differenza |x₁ - x₂|"];
   const compatibilita = results["Compatibilità"];
   const esito = results["Esito"];
@@ -145,7 +143,7 @@ const CustomCompatibilityEvaluationRenderer = memo(function CustomCompatibilityE
   );
 });
 
-const CustomUncertaintyMeasurementRenderer = memo(function CustomUncertaintyMeasurementRenderer({ results, formatValue }: { results: any, formatValue: (v?: number, s?: number) => string }) {
+const CustomUncertaintyMeasurementRenderer = memo(function CustomUncertaintyMeasurementRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   const mediaPonderata = results["Media ponderata"];
   const deviazioneStandard = results["Deviazione standard"];
   const erroreStandard = results["Errore standard della media"];
@@ -164,39 +162,39 @@ const CustomUncertaintyMeasurementRenderer = memo(function CustomUncertaintyMeas
 });
 
 
-const FitDetailsRenderer = memo(function FitDetailsRenderer({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) {
+const FitDetailsRenderer = memo(function FitDetailsRenderer({ details, formatValue }: { details: Record<string, unknown>, formatValue: (v?: number, s?: number) => string }) {
     return <div className="mt-6">
         <h4 className="font-semibold mb-2 text-md">Dettagli del Calcolo</h4>
         <div className="text-sm space-y-2 text-muted-foreground p-4 rounded-md bg-background/50">
-            {details.rho && <ResultRow htmlLabel="Densità da fit (ρ)" value={formatValue(details.rho.value, details.rho.sigma)} unit="g/cm³" />}
-            {details.k && <ResultRow htmlLabel="Pendenza (k)" value={formatValue(details.k.value, details.k.sigma)} />}
-            {details.R && <ResultRow htmlLabel="Resistenza (R)" value={formatValue(details.R.value, details.R.sigma)} unit="Ω" />}
-            {details.n2_over_n1 && <ResultRow htmlLabel="Rapporto n₂/n₁" value={formatValue(details.n2_over_n1.value, details.n2_over_n1.sigma)} />}
-            {details.v && <ResultRow htmlLabel="Velocità (v)" value={formatValue(details.v.value, details.v.sigma)} unit="m/s" />}
-            {details.a && <ResultRow htmlLabel="Termine quadratico (a)" value={formatValue(details.a.value, details.a.sigma)} />}
-            {details.v0 && <ResultRow htmlLabel="Velocità iniziale (v<sub>0</sub>)" value={formatValue(details.v0.value, details.v0.sigma)} unit="m/s" />}
-            {details.x0 && <ResultRow htmlLabel="Posizione iniziale (x<sub>0</sub>)" value={formatValue(details.x0.value, details.x0.sigma)} unit="m" />}
-            {details.L_medio && <ResultRow htmlLabel="Lunghezza media (L)" value={formatValue(details.L_medio.value, details.L_medio.sigma)} unit="m" />}
-            {details.T_medio && <ResultRow htmlLabel="Periodo medio (T)" value={formatValue(details.T_medio.value, details.T_medio.sigma)} unit="s" />}
-            {details.R2 !== undefined && <ResultRow htmlLabel="Coefficiente R²" value={details.R2.toFixed(4)} />}
-            {details.chi2_reduced && <ResultRow htmlLabel="Chi-quadro ridotto (χ²/dof)" value={details.chi2_reduced.toFixed(3)} />}
+            {!!details.rho && <ResultRow htmlLabel="Densità da fit (ρ)" value={formatValue((details.rho as Record<string, number>).value, (details.rho as Record<string, number>).sigma)} unit="g/cm³" />}
+            {!!details.k && <ResultRow htmlLabel="Pendenza (k)" value={formatValue((details.k as Record<string, number>).value, (details.k as Record<string, number>).sigma)} />}
+            {!!details.R && <ResultRow htmlLabel="Resistenza (R)" value={formatValue((details.R as Record<string, number>).value, (details.R as Record<string, number>).sigma)} unit="Ω" />}
+            {!!details.n2_over_n1 && <ResultRow htmlLabel="Rapporto n₂/n₁" value={formatValue((details.n2_over_n1 as Record<string, number>).value, (details.n2_over_n1 as Record<string, number>).sigma)} />}
+            {!!details.v && <ResultRow htmlLabel="Velocità (v)" value={formatValue((details.v as Record<string, number>).value, (details.v as Record<string, number>).sigma)} unit="m/s" />}
+            {!!details.a && <ResultRow htmlLabel="Termine quadratico (a)" value={formatValue((details.a as Record<string, number>).value, (details.a as Record<string, number>).sigma)} />}
+            {!!details.v0 && <ResultRow htmlLabel="Velocità iniziale (v<sub>0</sub>)" value={formatValue((details.v0 as Record<string, number>).value, (details.v0 as Record<string, number>).sigma)} unit="m/s" />}
+            {!!details.x0 && <ResultRow htmlLabel="Posizione iniziale (x<sub>0</sub>)" value={formatValue((details.x0 as Record<string, number>).value, (details.x0 as Record<string, number>).sigma)} unit="m" />}
+            {!!details.L_medio && <ResultRow htmlLabel="Lunghezza media (L)" value={formatValue((details.L_medio as Record<string, number>).value, (details.L_medio as Record<string, number>).sigma)} unit="m" />}
+            {!!details.T_medio && <ResultRow htmlLabel="Periodo medio (T)" value={formatValue((details.T_medio as Record<string, number>).value, (details.T_medio as Record<string, number>).sigma)} unit="s" />}
+            {details.R2 !== undefined && details.R2 !== null && <ResultRow htmlLabel="Coefficiente R²" value={Number(details.R2).toFixed(4)} />}
+            {!!details.chi2_reduced && <ResultRow htmlLabel="Chi-quadro ridotto (χ²/dof)" value={Number(details.chi2_reduced).toFixed(3)} />}
         </div>
     </div>
 });
 
-const VariableProcessingRenderer = memo(function VariableProcessingRenderer({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) {
-    const detailEntries = Object.entries(details).filter(([, detail]: [string, any]) => detail && typeof detail === 'object' && 'mean' in detail);
+const VariableProcessingRenderer = memo(function VariableProcessingRenderer({ details, formatValue }: { details: Record<string, unknown>, formatValue: (v?: number, s?: number) => string }) {
+    const detailEntries = Object.entries(details).filter(([, detail]: [string, unknown]) => detail && typeof detail === 'object' && 'mean' in detail);
     if(detailEntries.length === 0) return null;
 
     return (
         <div className="mt-6">
             <h4 className="font-semibold mb-2 text-md">Elaborazione Variabili</h4>
             <div className="text-sm space-y-2 text-muted-foreground p-4 rounded-md bg-background/50">
-            {detailEntries.map(([key, detail]: [string, any]) => (
+            {detailEntries.map(([key, detail]: [string, unknown]) => (
                 <div key={key} className="flex justify-between items-center">
-                    <span>Variabile <strong>{key}</strong>: {formatValue(detail.mean, detail.sigma)}</span>
+                    <span>Variabile <strong>{key}</strong>: {formatValue((detail as Record<string, unknown>).mean as number, (detail as Record<string, unknown>).sigma as number)}</span>
                     <span className="flex items-center gap-1">
-                        {detail.method === "Media semplice" ? "Media semplice (σ con errore standard)" : detail.method}
+                        {(detail as Record<string, unknown>).method === "Media semplice" ? "Media semplice (σ con errore standard)" : (detail as Record<string, unknown>).method as string}
                     </span>
                 </div>
             ))}
@@ -206,7 +204,7 @@ const VariableProcessingRenderer = memo(function VariableProcessingRenderer({ de
 });
 
 
-const ExtraDetailsRenderer = memo(function ExtraDetailsRenderer({ details, formatValue }: { details: any, formatValue: (v?: number, s?: number) => string }) {
+const ExtraDetailsRenderer = memo(function ExtraDetailsRenderer({ details, formatValue }: { details: Record<string, unknown>, formatValue: (v?: number, s?: number) => string }) {
     const detailEntries = Object.entries(details).filter(([key]) => ['E_initial', 'E_final', 'p_initial', 'p_final', 'v1_i', 'v_f', 'v_final'].includes(key));
     if(detailEntries.length === 0) return null;
 
@@ -234,11 +232,11 @@ const ExtraDetailsRenderer = memo(function ExtraDetailsRenderer({ details, forma
         <div className="mt-6">
             <h4 className="font-semibold mb-2 text-md">Dettagli Aggiuntivi</h4>
             <div className="text-sm space-y-2 text-muted-foreground p-4 rounded-md bg-background/50">
-                {detailEntries.map(([key, detail]: [string, any]) => (
+                {detailEntries.map(([key, detail]: [string, unknown]) => (
                     <ResultRow 
                         key={key}
                         htmlLabel={labelMap[key]} 
-                        value={formatValue(detail.value, detail.sigma)} 
+                        value={formatValue((detail as Record<string, unknown>).value as number, (detail as Record<string, unknown>).sigma as number)}
                         unit={unitMap[key]}
                     />
                 ))}
@@ -303,11 +301,11 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
   
   const hasResults = results && (results.value !== undefined || formula.customResultRenderer);
 
-  if (!hasResults) {
+  if (!hasResults || !results) {
     return <p className="text-muted-foreground text-center py-8">In attesa di dati sufficienti per il calcolo...</p>;
   }
 
-  const { value, sigma, details, modes } = results; // modes from calculation result if available
+  const { value, sigma, details } = results; // modes from calculation result if available
   const relativeUncertainty = value && sigma && value !== 0 ? (Math.abs(sigma / value) * 100).toFixed(1) : "N/D";
   
   const renderCustom = () => {
@@ -317,7 +315,7 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
         case 'newtons-second-law':
             return <CustomNewtonsSecondLawRenderer results={results} formatValue={formatValue} />;
         case 'mechanical-energy':
-            return <CustomMechanicalEnergyRenderer results={results} formatValue={formatValue} modes={details.driving_force_type ? {driving_force_type: details.driving_force_type} : {driving_force_type: 'mass'}} />;
+            return <CustomMechanicalEnergyRenderer results={results} formatValue={formatValue} modes={details && details.driving_force_type ? {driving_force_type: details.driving_force_type} : {driving_force_type: 'mass'}} />;
         case 'kirchhoffs-current-law':
             return <CustomKirchhoffsCurrentLawRenderer results={results} formatValue={formatValue} />;
         case 'second-kind-lever':
@@ -340,8 +338,8 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
     return (
       <div className="space-y-4">
         {renderCustom()}
-        {details?.v_final && <ExtraDetailsRenderer details={details} formatValue={formatValue}/>}
-        {details?.fit_details && <FitDetailsRenderer details={details.fit_details} formatValue={formatValue} />}
+        {details && details.v_final && <ExtraDetailsRenderer details={details} formatValue={formatValue}/>}
+        {details && details.fit_details && <FitDetailsRenderer details={details.fit_details} formatValue={formatValue} />}
          {details?.method && (
             <div className="flex justify-between items-center pt-4">
                 <span className="text-sm text-muted-foreground flex items-center gap-2">Metodo di calcolo: {details.method}</span>
