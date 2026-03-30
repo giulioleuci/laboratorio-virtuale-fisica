@@ -20,8 +20,8 @@ const getUniformMotionChartInfo = (
 
     let fit;
     if (results?.details?.fit) {
-        let slope = results.details.fit.slope; // Original fit is x(m) vs t(s), so slope is v(m/s)
-        let intercept = results.details.fit.intercept;
+        let slope = (results.details.fit as { slope: number }).slope; // Original fit is x(m) vs t(s), so slope is v(m/s)
+        let intercept = (results.details.fit as { intercept: number }).intercept;
 
         if (xAxisUnit === 'ms') {
             slope = slope / 1000; // m/s -> m/ms

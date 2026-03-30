@@ -28,12 +28,14 @@ export type ProcessedInput = {
   count: number;
 };
 
+export type ResultItem = { value?: number; sigma?: number; unit?: string };
+
 export type CalculationResult = {
-  [key: string]: any;
+  [key: string]: unknown;
   value?: number;
   sigma?: number;
   details?: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
 };
 

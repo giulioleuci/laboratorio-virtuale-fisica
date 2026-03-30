@@ -30,8 +30,8 @@ const getPendulumChartInfo = (
 
     let fit;
     if (results?.details?.fit) {
-        let slope = results.details.fit.slope; // Original fit is T^2 vs L(m), slope is s^2/m
-        const intercept = results.details.fit.intercept;
+        let slope = (results.details.fit as { slope: number }).slope; // Original fit is T^2 vs L(m), slope is s^2/m
+        const intercept = (results.details.fit as { intercept: number }).intercept;
         if (xAxisUnit === 'cm') {
             slope = slope / 100; // s^2/m -> s^2/cm
         }

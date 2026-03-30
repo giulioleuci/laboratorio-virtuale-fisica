@@ -1,6 +1,6 @@
 
 import { polynomialRegression, linearRegression } from '@/lib/stats';
-import type { Formula, ProcessedInput, MeasurementRow, ModeState, ChartInfo, CalculationResult, ChartDataPoint } from '@/lib/types';
+import type { Formula, ProcessedInput, MeasurementRow, ModeState, ChartInfo, CalculationResult, ChartDataPoint, ResultItem } from '@/lib/types';
 import { AcceleratedMotionChartControls } from './accelerated-motion-chart-controls';
 
 // Function to transform data for the chart
@@ -56,12 +56,12 @@ const getAcceleratedMotionChartInfo = (
     if (results?.details?.x0 && results?.details?.v0 && results?.details?.a && 
         xAxisUnit === 's' && yAxisUnit === 'm' && showRegression) {
         
-        const { x0, v0, a } = results.details;
+        const { x0, v0, a } = results.details as Record<string, ResultItem>;
         
         // Calculate y_fit for each data point using the parabola: x(t) = x0 + v0*t + (1/2)*a*t²
         chartData.forEach(point => {
             const t = point.x; // time
-            point.y_fit = x0.value + v0.value * t + 0.5 * a.value * t * t;
+            point.y_fit = (x0.value || 0) + (v0.value || 0) * t + 0.5 * (a.value || 0) * t * t;
         });
         
         // Provide a dummy fit object so the chart component renders the regression line
@@ -70,7 +70,7 @@ const getAcceleratedMotionChartInfo = (
     // Handle linear fit (fit_linear method)
     else if (results?.details?.fit && xAxisUnit === 's' && yAxisUnit === 'm' && showRegression && isLinearFit) {
         
-        const linearFit = results.details.fit;
+        const linearFit = results.details.fit as { slope: number, intercept: number };
         
         // For linear fit, the chart component can handle it directly
         // The fit is already in T² vs X format from the calculation

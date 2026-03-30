@@ -178,7 +178,7 @@ export const springGravityFormula: Formula = {
                 return data.length >= 2 && modes.calculation_method === 'fit';
             },
             getInfo: (data, results) => {
-                const k_mean = results?.details?.k_mean || 1;
+                const k_mean = (results?.details?.k_mean as number) || 1;
 
                 const chartData = data.map(p => {
                     const m_kg = (p.m ?? 0) / 1000;
@@ -200,8 +200,8 @@ export const springGravityFormula: Formula = {
                 let fit;
                 if (results?.details?.fit) {
                     fit = {
-                        slope: results.details.fit.slope,
-                        intercept: results.details.fit.intercept
+                        slope: (results.details.fit as { slope: number }).slope,
+                        intercept: (results.details.fit as { intercept: number }).intercept
                     };
                 }
 
