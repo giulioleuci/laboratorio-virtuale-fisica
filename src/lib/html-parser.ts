@@ -1,4 +1,3 @@
-// @ts-ignore
 import DOMPurify from 'isomorphic-dompurify';
 import parse from 'html-react-parser';
 import type React from 'react';
