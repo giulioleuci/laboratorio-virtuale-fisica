@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test';
 import assert from 'node:assert';
-import { mean, weightedMean, sampleStdDev, stdErrMean } from './stats.ts';
+import { mean, weightedMean, sampleStdDev, stdErrMean, linearRegression } from './stats.ts';
 
 describe('mean', () => {
   test('should return 0 for an empty array', () => {
@@ -188,5 +188,39 @@ describe('stdErrMean', () => {
     // stdErrMean: 1 / sqrt(3) approx 0.5773502691896257
     const result = stdErrMean([1, 2, 3]);
     assert.ok(Math.abs(result - (1 / Math.sqrt(3))) < 1e-10);
+  });
+});
+
+describe('linearRegression', () => {
+  test('should return null for less than 2 points', () => {
+    assert.strictEqual(linearRegression([1], [1]), null);
+  });
+
+  test('should fit unweighted data correctly', () => {
+    const x = [1, 2, 3, 4, 5];
+    const y = [2, 4, 6, 8, 10];
+    const result = linearRegression(x, y);
+    assert.ok(result);
+    assert.ok(Math.abs(result.slope - 2) < 1e-10);
+    assert.ok(Math.abs(result.intercept - 0) < 1e-10);
+  });
+
+  test('should fit weighted data correctly', () => {
+    const x = [1, 2, 3];
+    const y = [1, 2, 3];
+    const sigma_y = [0.1, 0.1, 0.1];
+    const result = linearRegression(x, y, sigma_y);
+    assert.ok(result);
+    assert.ok(Math.abs(result.slope - 1) < 1e-10);
+    assert.ok(Math.abs(result.intercept - 0) < 1e-10);
+  });
+
+  test('should handle forceInterceptZero', () => {
+    const x = [1, 2, 3];
+    const y = [2.1, 3.9, 6.1]; // close to y = 2x
+    const result = linearRegression(x, y, null, true);
+    assert.ok(result);
+    assert.strictEqual(result.intercept, 0);
+    assert.ok(Math.abs(result.slope - 2) < 0.1);
   });
 });
