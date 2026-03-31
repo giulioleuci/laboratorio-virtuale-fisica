@@ -1,9 +1,24 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext, useContext } from 'react';
 import { usePathname } from 'next/navigation';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
+
+interface GlobalLoadingContextType {
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
+}
+
+const GlobalLoadingContext = createContext<GlobalLoadingContextType | undefined>(undefined);
+
+export function useGlobalLoading() {
+  const context = useContext(GlobalLoadingContext);
+  if (context === undefined) {
+    throw new Error('useGlobalLoading must be used within a GlobalLoadingProvider');
+  }
+  return context;
+}
 
 export function GlobalLoadingProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -21,17 +36,19 @@ export function GlobalLoadingProvider({ children }: { children: React.ReactNode 
     return () => clearTimeout(timer);
   }, [pathname]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center">
-        <div className="w-full max-w-7xl p-4 md:p-8">
-          <GlobalLoadingSkeleton />
+  return (
+    <GlobalLoadingContext.Provider value={{ isLoading, setIsLoading }}>
+      {isLoading ? (
+        <div className="min-h-screen flex flex-col items-center">
+          <div className="w-full max-w-7xl p-4 md:p-8">
+            <GlobalLoadingSkeleton />
+          </div>
         </div>
-      </div>
-    );
-  }
-
-  return <>{children}</>;
+      ) : (
+        children
+      )}
+    </GlobalLoadingContext.Provider>
+  );
 }
 
 function GlobalLoadingSkeleton() {
