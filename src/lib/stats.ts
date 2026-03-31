@@ -1,5 +1,5 @@
 
-import { multiply, inv, transpose, Matrix, matrix, mean as mathMean, std, sum } from 'mathjs';
+import { multiply, inv, transpose, Matrix, matrix, diag, mean as mathMean, std, sum } from 'mathjs';
 import { levenbergMarquardt } from 'ml-levenberg-marquardt';
 
 export function mean(values: number[]): number {
@@ -91,15 +91,16 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
   const n = x.length;
   if (n < 2) return null;
 
+  const weights = sigma_y ? sigma_y.map(s => s && s > 0 ? 1 / (s * s) : 1) : null;
+
   if (forceInterceptZero) {
     let sum_xy_w = 0;
     let sum_x2_w = 0;
     
-    const weights = sigma_y ? sigma_y.map(s => s && s > 0 ? 1 / (s*s) : 1) : Array(n).fill(1);
-    
     for (let i = 0; i < n; i++) {
-        sum_xy_w += weights[i] * x[i] * y[i];
-        sum_x2_w += weights[i] * x[i] * x[i];
+        const w = weights ? weights[i] : 1;
+        sum_xy_w += w * x[i] * y[i];
+        sum_x2_w += w * x[i] * x[i];
     }
 
     if (sum_x2_w === 0) return null;
@@ -115,16 +116,24 @@ export function linearRegression(x: number[], y: number[], sigma_y: (number | nu
   const X_cols = [Array(n).fill(1), x];
   const X = transpose(matrix(X_cols));
 
-  const W_vals = sigma_y ? sigma_y.map(s => s && s > 0 ? 1 / (s * s) : 1) : Array(n).fill(1);
-  const W = matrix(Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => i === j ? W_vals[i] : 0)));
-
   try {
     const XT = transpose(X);
-    const XTW = multiply(XT, W);
-    const XTWX = multiply(XTW, X);
-    const covMatrix = inv(XTWX);
-    const XTWY = multiply(XTW, Y);
-    const coeffs = multiply(covMatrix, XTWY) as Matrix;
+    let covMatrix: Matrix;
+    let coeffs: Matrix;
+
+    if (weights) {
+      const W = (diag as any)(weights);
+      const XTW = multiply(XT, W);
+      const XTWX = multiply(XTW, X);
+      covMatrix = inv(XTWX);
+      const XTWY = multiply(XTW, Y);
+      coeffs = multiply(covMatrix, XTWY) as Matrix;
+    } else {
+      const XTX = multiply(XT, X);
+      covMatrix = inv(XTX);
+      const XTY = multiply(XT, Y);
+      coeffs = multiply(covMatrix, XTY) as Matrix;
+    }
 
     const [intercept, slope] = coeffs.toArray().flat() as number[];
     const sigma_intercept = Math.sqrt(covMatrix.get([0, 0]) as number);
