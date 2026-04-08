@@ -47,8 +47,8 @@ const getHookesLawChartInfo = (
     
     let fit;
     if (results?.details?.fit) {
-        let slope = results.details.fit.slope; // Original fit is F vs L(m), so slope is k
-        let intercept = results.details.fit.intercept;
+        let slope = (results.details.fit as { slope: number }).slope; // Original fit is F vs L(m), so slope is k
+        let intercept = (results.details.fit as { intercept: number }).intercept;
 
         // Adjust slope for different plot units
         if (yAxisType === 'mass') { // y-axis is mass (g)

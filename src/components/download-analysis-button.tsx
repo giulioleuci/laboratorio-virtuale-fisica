@@ -4,12 +4,12 @@
 import React, { memo } from 'react';
 import { Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { Formula } from '@/lib/types';
+import type { Formula, ResultItem } from '@/lib/types';
 import { generateDownloadFilename } from '@/lib/utils';
 import { useSettings } from '@/contexts/settings-context';
 
 interface DownloadAnalysisButtonProps {
-  results: any;
+  results: import("@/lib/types").CalculationResult;
   formula: Formula;
   experimentName: string;
   formatValue: (value?: number, sigma?: number) => string;
@@ -25,7 +25,7 @@ const downloadFile = (content: string, fileName: string, mimeType: string) => {
     document.body.removeChild(link);
 };
 
-const generateMarkdownContent = (results: any, formula: Formula, formatValue: (v?: number, s?: number) => string, precisionMode: 'auto' | 'fixed'): string => {
+const generateMarkdownContent = (results: import("@/lib/types").CalculationResult, formula: Formula, formatValue: (v?: number, s?: number) => string, precisionMode: 'auto' | 'fixed'): string => {
     let content = `# Analisi: ${formula.title}\n\n`;
     content += `**Esperimento:** ${formula.description}\n`;
     content += `**Categoria:** ${formula.category}\n`;
@@ -41,30 +41,30 @@ const generateMarkdownContent = (results: any, formula: Formula, formatValue: (v
         // Custom renderers
         switch(formula.id) {
             case 'archimedes':
-                content += `* **Spinta sperimentale (B_exp):** ${formatValue(results.B_exp?.value, results.B_exp?.sigma)} N\n`;
-                content += `* **Spinta teorica (B_teo):** ${formatValue(results.B_teo?.value, results.B_teo?.sigma)} N\n`;
+                content += `* **Spinta sperimentale (B_exp):** ${formatValue((results.B_exp as ResultItem)?.value, (results.B_exp as ResultItem)?.sigma)} N\n`;
+                content += `* **Spinta teorica (B_teo):** ${formatValue((results.B_teo as ResultItem)?.value, (results.B_teo as ResultItem)?.sigma)} N\n`;
                 break;
             case 'newtons-second-law':
-                content += `* **Accelerazione teorica (a_teo):** ${formatValue(results.a_teo?.value, results.a_teo?.sigma)} m/s²\n`;
-                content += `* **Accelerazione sperimentale (a_exp):** ${formatValue(results.a_exp?.value, results.a_exp?.sigma)} m/s²\n`;
+                content += `* **Accelerazione teorica (a_teo):** ${formatValue((results.a_teo as ResultItem)?.value, (results.a_teo as ResultItem)?.sigma)} m/s²\n`;
+                content += `* **Accelerazione sperimentale (a_exp):** ${formatValue((results.a_exp as ResultItem)?.value, (results.a_exp as ResultItem)?.sigma)} m/s²\n`;
                 break;
             case 'mechanical-energy':
-                content += `* **Variazione Energia Cinetica (ΔK):** ${formatValue(results.delta_K?.value, results.delta_K?.sigma)} J\n`;
-                content += `* **Lavoro/Energia Potenziale (W/U):** ${formatValue(results.Work?.value, results.Work?.sigma)} J\n`;
+                content += `* **Variazione Energia Cinetica (ΔK):** ${formatValue((results.delta_K as ResultItem)?.value, (results.delta_K as ResultItem)?.sigma)} J\n`;
+                content += `* **Lavoro/Energia Potenziale (W/U):** ${formatValue((results.Work as ResultItem)?.value, (results.Work as ResultItem)?.sigma)} J\n`;
                 break;
              case 'kirchhoffs-current-law':
-                content += `* **Somma Correnti Entranti (ΣI_in):** ${formatValue(results.sum_incoming?.value, results.sum_incoming?.sigma)} A\n`;
-                content += `* **Somma Correnti Uscenti (ΣI_out):** ${formatValue(results.sum_outgoing?.value, results.sum_outgoing?.sigma)} A\n`;
-                content += `* **Somma Algebrica (ΣI_in - ΣI_out):** ${formatValue(results.algebraic_sum?.value, results.algebraic_sum?.sigma)} A\n`;
+                content += `* **Somma Correnti Entranti (ΣI_in):** ${formatValue((results.sum_incoming as ResultItem)?.value, (results.sum_incoming as ResultItem)?.sigma)} A\n`;
+                content += `* **Somma Correnti Uscenti (ΣI_out):** ${formatValue((results.sum_outgoing as ResultItem)?.value, (results.sum_outgoing as ResultItem)?.sigma)} A\n`;
+                content += `* **Somma Algebrica (ΣI_in - ΣI_out):** ${formatValue((results.algebraic_sum as ResultItem)?.value, (results.algebraic_sum as ResultItem)?.sigma)} A\n`;
                 break;
             case 'second-kind-lever':
-                 content += `* **Momento motore (Mₘ):** ${formatValue(results.M_motore?.value, results.M_motore?.sigma)} N·m\n`;
-                 content += `* **Momento resistente (Mᵣ):** ${formatValue(results.M_resistente?.value, results.M_resistente?.sigma)} N·m\n`;
+                 content += `* **Momento motore (Mₘ):** ${formatValue((results.M_motore as ResultItem)?.value, (results.M_motore as ResultItem)?.sigma)} N·m\n`;
+                 content += `* **Momento resistente (Mᵣ):** ${formatValue((results.M_resistente as ResultItem)?.value, (results.M_resistente as ResultItem)?.sigma)} N·m\n`;
                  break;
             case 'youngs-double-slit':
             case 'diffraction-grating':
-                 const value_nm = results.value * 1e9;
-                 const sigma_nm = results.sigma * 1e9;
+                 const value_nm = (results.value ?? 0) * 1e9;
+                 const sigma_nm = results.sigma !== undefined ? results.sigma * 1e9 : undefined;
                  content += `* **${formula.result.label}:** ${formatValue(value_nm, sigma_nm)} ${formula.result.unit}\n`;
                  break;
         }
@@ -79,7 +79,7 @@ const generateMarkdownContent = (results: any, formula: Formula, formatValue: (v
         content += `\n## Dettagli del Calcolo\n\n`;
         content += `* **Metodo di calcolo:** ${results.details.method || 'Non specificato'}\n`;
         
-        const fitDetails = results.details.fit_details || results.details;
+        const fitDetails = (results.details.fit_details || results.details) as Record<string, any>;
 
         if (fitDetails.R2 !== undefined) content += `* **Coefficiente R²:** ${fitDetails.R2.toFixed(4)}\n`;
         if (fitDetails.chi2_reduced) content += `* **Chi-quadro ridotto (χ²/dof):** ${fitDetails.chi2_reduced.toFixed(3)}\n`;

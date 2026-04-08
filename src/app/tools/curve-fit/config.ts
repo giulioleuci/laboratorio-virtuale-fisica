@@ -74,7 +74,7 @@ export const curveFitFormula: Formula = {
                     data: chartData,
                     xLabel: 'x',
                     yLabel: 'y',
-                    fit: results?.details?.fit,
+                    fit: results?.details?.fit as { slope: number, intercept: number } | undefined,
                 };
             },
         }

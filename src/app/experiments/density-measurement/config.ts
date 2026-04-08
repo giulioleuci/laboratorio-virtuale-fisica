@@ -193,8 +193,8 @@ export const densityMeasurementFormula: Formula = {
                 let fit;
                 if (results?.details?.fit) {
                     fit = {
-                        slope: results.details.fit.slope,
-                        intercept: results.details.fit.intercept
+                        slope: (results.details.fit as { slope: number }).slope,
+                        intercept: (results.details.fit as { intercept: number }).intercept
                     };
                 }
 

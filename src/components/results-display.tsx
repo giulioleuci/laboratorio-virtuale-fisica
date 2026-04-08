@@ -1,7 +1,7 @@
 
 "use client";
 import { useCallback, memo } from "react";
-import type { Formula, CalculationResult, ModeState } from "@/lib/types";
+import type { Formula, CalculationResult, ModeState, ResultItem } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { useSettings } from "@/contexts/settings-context";
 import { DownloadAnalysisButton } from "./download-analysis-button";
@@ -25,7 +25,7 @@ const ResultRow = memo(function ResultRow({ label, value, unit, htmlLabel }: { l
 
 const CustomArchimedesRenderer = memo(function CustomArchimedesRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.B_exp || !results.B_teo) return null;
-  const { B_exp, B_teo } = results;
+  const { B_exp, B_teo } = results as Record<string, ResultItem>;
   
   return (
     <div className="space-y-4">
@@ -37,7 +37,7 @@ const CustomArchimedesRenderer = memo(function CustomArchimedesRenderer({ result
 
 const CustomNewtonsSecondLawRenderer = memo(function CustomNewtonsSecondLawRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.a_teo || !results.a_exp) return null;
-  const { a_teo, a_exp } = results;
+  const { a_teo, a_exp } = results as Record<string, ResultItem>;
   
   return (
     <div className="space-y-4">
@@ -49,7 +49,7 @@ const CustomNewtonsSecondLawRenderer = memo(function CustomNewtonsSecondLawRende
 
 const CustomMechanicalEnergyRenderer = memo(function CustomMechanicalEnergyRenderer({ results, formatValue, modes }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string, modes: ModeState }) {
   if (!results.delta_K || !results.Work) return null;
-  const { delta_K, Work, energy_difference } = results;
+  const { delta_K, Work, energy_difference } = results as Record<string, ResultItem>;
   
   const workLabel = modes.driving_force_type === 'mass' ? "Energia Potenziale persa (U)" : "Lavoro (W)";
 
@@ -64,7 +64,7 @@ const CustomMechanicalEnergyRenderer = memo(function CustomMechanicalEnergyRende
 
 const CustomKirchhoffsCurrentLawRenderer = memo(function CustomKirchhoffsCurrentLawRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.sum_incoming || !results.sum_outgoing || !results.algebraic_sum) return null;
-  const { sum_incoming, sum_outgoing, algebraic_sum } = results;
+  const { sum_incoming, sum_outgoing, algebraic_sum } = results as Record<string, ResultItem>;
   
   return (
     <div className="space-y-4">
@@ -77,8 +77,8 @@ const CustomKirchhoffsCurrentLawRenderer = memo(function CustomKirchhoffsCurrent
 
 const CustomSecondKindLeverRenderer = memo(function CustomSecondKindLeverRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
   if (!results.M_motore || !results.M_resistente) return null;
-  const { M_motore, M_resistente } = results;
-  const differenza = results["Differenza |Mₘ - Mᵣ|"];
+  const { M_motore, M_resistente } = results as Record<string, ResultItem>;
+  const differenza = results["Differenza |Mₘ - Mᵣ|"] as ResultItem;
 
   return (
     <div className="space-y-4">
@@ -105,9 +105,9 @@ const CustomOpticsResultRenderer = memo(function CustomOpticsResultRenderer({ re
 });
 
 const CustomAbsoluteRelativeErrorsRenderer = memo(function CustomAbsoluteRelativeErrorsRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
-  const erroreAssoluto = results["Errore assoluto"];
-  const erroreRelativo = results["Errore relativo"];
-  const errorePercentuale = results["Errore percentuale"];
+  const erroreAssoluto = results["Errore assoluto"] as ResultItem;
+  const erroreRelativo = results["Errore relativo"] as ResultItem;
+  const errorePercentuale = results["Errore percentuale"] as ResultItem;
 
   if (!erroreAssoluto && !erroreRelativo && !errorePercentuale) return null;
 
@@ -121,9 +121,9 @@ const CustomAbsoluteRelativeErrorsRenderer = memo(function CustomAbsoluteRelativ
 });
 
 const CustomCompatibilityEvaluationRenderer = memo(function CustomCompatibilityEvaluationRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
-  const differenza = results["Differenza |x₁ - x₂|"];
-  const compatibilita = results["Compatibilità"];
-  const esito = results["Esito"];
+  const differenza = results["Differenza |x₁ - x₂|"] as ResultItem;
+  const compatibilita = results["Compatibilità"] as ResultItem;
+  const esito = results["Esito"] as { value: string };
 
   if (!differenza && !compatibilita) return null;
 
@@ -144,10 +144,10 @@ const CustomCompatibilityEvaluationRenderer = memo(function CustomCompatibilityE
 });
 
 const CustomUncertaintyMeasurementRenderer = memo(function CustomUncertaintyMeasurementRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
-  const mediaPonderata = results["Media ponderata"];
-  const deviazioneStandard = results["Deviazione standard"];
-  const erroreStandard = results["Errore standard della media"];
-  const semidispersione = results["Semidispersione massima"];
+  const mediaPonderata = results["Media ponderata"] as ResultItem;
+  const deviazioneStandard = results["Deviazione standard"] as ResultItem;
+  const erroreStandard = results["Errore standard della media"] as ResultItem;
+  const semidispersione = results["Semidispersione massima"] as ResultItem;
 
   if (!mediaPonderata && !deviazioneStandard && !erroreStandard && !semidispersione) return null;
 
@@ -315,7 +315,7 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
         case 'newtons-second-law':
             return <CustomNewtonsSecondLawRenderer results={results} formatValue={formatValue} />;
         case 'mechanical-energy':
-            return <CustomMechanicalEnergyRenderer results={results} formatValue={formatValue} modes={details && details.driving_force_type ? {driving_force_type: details.driving_force_type} : {driving_force_type: 'mass'}} />;
+            return <CustomMechanicalEnergyRenderer results={results} formatValue={formatValue} modes={details && details.driving_force_type ? {driving_force_type: details.driving_force_type as string} : {driving_force_type: 'mass'}} />;
         case 'kirchhoffs-current-law':
             return <CustomKirchhoffsCurrentLawRenderer results={results} formatValue={formatValue} />;
         case 'second-kind-lever':
@@ -338,11 +338,11 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
     return (
       <div className="space-y-4">
         {renderCustom()}
-        {details && details.v_final && <ExtraDetailsRenderer details={details} formatValue={formatValue}/>}
-        {details && details.fit_details && <FitDetailsRenderer details={details.fit_details} formatValue={formatValue} />}
-         {details?.method && (
+        {!!(details && details.v_final) && <ExtraDetailsRenderer details={details as Record<string, unknown>} formatValue={formatValue}/>}
+        {!!(details && details.fit_details) && <FitDetailsRenderer details={details.fit_details as Record<string, unknown>} formatValue={formatValue} />}
+         {!!(details?.method) && (
             <div className="flex justify-between items-center pt-4">
-                <span className="text-sm text-muted-foreground flex items-center gap-2">Metodo di calcolo: {details.method}</span>
+                <span className="text-sm text-muted-foreground flex items-center gap-2">Metodo di calcolo: {details.method as string}</span>
             </div>
          )}
          <div className="flex justify-end pt-4">
@@ -361,17 +361,17 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
       />
       <ResultRow label="Incertezza relativa" value={relativeUncertainty !== "N/D" ? `${relativeUncertainty} %` : "N/D"} />
 
-      {details && details.method && (
+      {!!(details && details.method) && (
         <div className="flex justify-between items-center pt-4">
-          <span className="text-sm text-muted-foreground flex items-center gap-2">Metodo di calcolo: {details.method}
+          <span className="text-sm text-muted-foreground flex items-center gap-2">Metodo di calcolo: {details.method as string}
           </span>
         </div>
       )}
 
-      {details && (details.R2 !== undefined || details.a || details.v || details.k || details.x0 || details.L_medio || details.T_medio || details.R || details.n2_over_n1 || details.rho) && <FitDetailsRenderer details={details} formatValue={formatValue} />}
+      {!!(details && (details.R2 !== undefined || details.a || details.v || details.k || details.x0 || details.L_medio || details.T_medio || details.R || details.n2_over_n1 || details.rho)) && <FitDetailsRenderer details={details as Record<string, unknown>} formatValue={formatValue} />}
       
-      {details && <VariableProcessingRenderer details={details} formatValue={formatValue}/>}
-      {details && <ExtraDetailsRenderer details={details} formatValue={formatValue} />}
+      {!!details && <VariableProcessingRenderer details={details as Record<string, unknown>} formatValue={formatValue}/>}
+      {!!details && <ExtraDetailsRenderer details={details as Record<string, unknown>} formatValue={formatValue} />}
       
        <div className="flex justify-end pt-4">
             <DownloadAnalysisButton results={results} formula={formula} experimentName={experimentName} formatValue={formatValue} />

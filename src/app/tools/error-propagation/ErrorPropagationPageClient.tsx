@@ -193,7 +193,7 @@ export default function ErrorPropagationPageClient({ id }: { id: string }) {
                 {results?.details?.error ? (
                 <Alert variant="destructive">
                     <AlertTitle>Errore nel calcolo</AlertTitle>
-                    <AlertDescription>{results.details.error}</AlertDescription>
+                    <AlertDescription>{results.details.error as string}</AlertDescription>
                 </Alert>
                 ) : (
                 <ResultsDisplay
