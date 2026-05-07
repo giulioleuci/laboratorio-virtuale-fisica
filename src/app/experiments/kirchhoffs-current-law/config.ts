@@ -1,5 +1,4 @@
 
-import { weightedMean } from '@/lib/stats';
 import type { Formula, ProcessedInput, MeasurementRow, ModeState } from '@/lib/types';
 import { sum } from 'mathjs';
 
