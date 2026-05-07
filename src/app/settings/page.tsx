@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowLeft, Cog, Palette, Type } from "lucide-react";
+import { ArrowLeft, Cog, Palette } from "lucide-react";
 
 import { useSettings } from "@/contexts/settings-context";
 import { Button } from "@/components/ui/button";
