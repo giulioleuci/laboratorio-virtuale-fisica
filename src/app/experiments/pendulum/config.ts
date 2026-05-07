@@ -133,13 +133,27 @@ export const pendulumFormula: Formula = {
         }
 
         // mode 'fit'
-        const lValues = dataWithPeriod.map(r => r['l']).filter(v => v != null) as number[];
-        const T_values = dataWithPeriod.map(r => r.T).filter(v => v != null) as number[];
-        const tSquaredValues = T_values.map(t => t * t);
-        
-        const T_sigmas = dataWithPeriod.map(r => r.sigma_T).filter(v => v !== null) as number[];
-        // Propagate error from T to T^2: sigma(T^2) = 2 * T * sigma(T)
-        const tSquaredSigmas = T_values.map((t, i) => T_sigmas[i] ? 2 * t * T_sigmas[i] : null);
+        const lValues: number[] = [];
+        const tSquaredValues: number[] = [];
+        const tSquaredSigmas: (number | null)[] = [];
+
+        for (let i = 0; i < dataWithPeriod.length; i++) {
+            const row = dataWithPeriod[i];
+            const l = row['l'];
+            const T = row.T;
+            const sigma_T = row.sigma_T;
+
+            if (l != null && T != null) {
+                lValues.push(l);
+                tSquaredValues.push(T * T);
+                // Propagate error from T to T^2: sigma(T^2) = 2 * T * sigma(T)
+                if (sigma_T != null) {
+                    tSquaredSigmas.push(2 * T * sigma_T);
+                } else {
+                    tSquaredSigmas.push(null);
+                }
+            }
+        }
 
         if (lValues.length < 2 || tSquaredValues.length < 2) {
             return { details: { error: "Dati insufficienti per il fit lineare." } };
