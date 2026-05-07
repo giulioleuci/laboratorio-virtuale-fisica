@@ -1,7 +1,6 @@
 
 import type { Formula, ProcessedInput, MeasurementRow, ModeState } from '@/lib/types';
 import { G_CONST } from '@/lib/constants';
-import { mean } from 'mathjs';
 
 export const mechanicalEnergyFormula: Formula = {
     id: 'mechanical-energy',
