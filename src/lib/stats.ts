@@ -1,5 +1,5 @@
 
-import { multiply, inv, transpose, Matrix, matrix, diag, mean as mathMean, std, sum } from 'mathjs';
+import { multiply, inv, transpose, Matrix, matrix, diag, mean as mathMean, std } from 'mathjs';
 import { levenbergMarquardt } from 'ml-levenberg-marquardt';
 
 export function mean(values: number[]): number {
