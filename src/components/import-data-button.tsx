@@ -28,29 +28,48 @@ export const ImportDataButton: React.FC<ImportDataButtonProps> = ({ columns, set
         setIsProcessing(false);
     };
 
+    const columnMaps = React.useMemo(() => {
+        const labelMap = new Map<string, string>();
+        const idMap = new Map<string, string>();
+
+        columns.forEach(c => {
+            const cleanLabel = c.label.replace(/<[^>]*>?/gm, '').trim().toLowerCase();
+            if (!labelMap.has(cleanLabel)) {
+                labelMap.set(cleanLabel, c.id);
+            }
+            const cleanId = c.id.toLowerCase();
+            if (!idMap.has(cleanId)) {
+                idMap.set(cleanId, c.id);
+            }
+        });
+
+        return { labelMap, idMap };
+    }, [columns]);
+
     const findColumnId = (header: string): string | null => {
         const cleanHeader = header.trim().toLowerCase();
         
-        // Try exact label match (e.g., "Massa (m)")
-        let found = columns.find(c => c.label.replace(/<[^>]*>?/gm, '').trim().toLowerCase() === cleanHeader);
-        if (found) return found.id;
+        // 1. Try exact label match (e.g., "Massa (m)")
+        const foundIdFromLabel = columnMaps.labelMap.get(cleanHeader);
+        if (foundIdFromLabel) return foundIdFromLabel;
         
-        // Try matching sigma labels like "σ (Massa (m))"
+        // 2. Try matching sigma labels like "σ (Massa (m))"
         const sigmaMatch = cleanHeader.match(/^(σ|sigma)\s*\((.+)\)$/);
         if (sigmaMatch) {
             const potentialLabel = sigmaMatch[2].trim();
-            found = columns.find(c => c.label.replace(/<[^>]*>?/gm, '').trim().toLowerCase() === potentialLabel);
-            if (found) return `sigma_${found.id}`;
+            const foundIdFromSigmaLabel = columnMaps.labelMap.get(potentialLabel);
+            if (foundIdFromSigmaLabel) return `sigma_${foundIdFromSigmaLabel}`;
         }
         
-        // Try matching ID (e.g., "m" or "sigma_m")
-        found = columns.find(c => c.id.toLowerCase() === cleanHeader);
-        if (found) return found.id;
+        // 3. Try matching ID (e.g., "m" or "sigma_m")
+        const foundIdFromId = columnMaps.idMap.get(cleanHeader);
+        if (foundIdFromId) return foundIdFromId;
         
+        // 4. Try matching sigma_ + ID
         if (cleanHeader.startsWith('sigma_')) {
             const potentialId = cleanHeader.substring(6);
-            found = columns.find(c => c.id.toLowerCase() === potentialId);
-            if (found) return `sigma_${found.id}`;
+            const foundIdFromPotentialId = columnMaps.idMap.get(potentialId);
+            if (foundIdFromPotentialId) return `sigma_${foundIdFromPotentialId}`;
         }
 
         return null;
