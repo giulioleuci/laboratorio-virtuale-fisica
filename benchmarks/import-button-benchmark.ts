@@ -100,3 +100,15 @@ const endOptimized = performance.now();
 const timeOptimized = endOptimized - startOptimized;
 
 console.log(`Optimized Time: ${timeOptimized.toFixed(2)}ms`);
+
+// Correctness check
+console.log('\nChecking correctness...');
+headers.forEach(h => {
+    const original = findColumnIdOriginal(h);
+    const optimized = findColumnIdOptimized(h);
+    if (original !== optimized) {
+        console.error(`Mismatch for header "${h}": Original=${original}, Optimized=${optimized}`);
+        process.exit(1);
+    }
+});
+console.log('Correctness check passed!');
