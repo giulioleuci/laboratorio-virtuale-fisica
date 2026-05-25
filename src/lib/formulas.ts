@@ -10,6 +10,7 @@ import { acceleratedMotionFormula } from '@/app/experiments/accelerated-motion/c
 import { ohmsLawFormula } from '@/app/experiments/ohms-law/config';
 import { resistorsFormula } from '@/app/experiments/resistors/config';
 import { snellsLawFormula } from '@/app/experiments/snells-law/config';
+import { lawOfReflectionFormula } from '@/app/experiments/law-of-reflection/config';
 import { mechanicalEnergyFormula } from '@/app/experiments/mechanical-energy/config';
 import { momentumConservationFormula } from '@/app/experiments/momentum-conservation/config';
 import { newtonsSecondLawFormula } from '@/app/experiments/newtons-second-law/config';
@@ -45,6 +46,7 @@ export const formulas: Formula[] = [
     resistorsFormula,
     kirchhoffsCurrentLawFormula,
     snellsLawFormula,
+    lawOfReflectionFormula,
     youngsDoubleSlitFormula,
     diffractionGratingFormula,
     mechanicalEnergyFormula,

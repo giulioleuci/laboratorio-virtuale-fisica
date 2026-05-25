@@ -9,6 +9,7 @@ import { acceleratedMotionFixtures } from "@/app/experiments/accelerated-motion/
 import { ohmsLawFixtures } from "@/app/experiments/ohms-law/fixtures";
 import { resistorsFixtures } from "@/app/experiments/resistors/fixtures";
 import { snellsLawFixtures } from "@/app/experiments/snells-law/fixtures";
+import { lawOfReflectionFixtures } from "@/app/experiments/law-of-reflection/fixtures";
 import { mechanicalEnergyFixtures } from "@/app/experiments/mechanical-energy/fixtures";
 import { momentumConservationFixtures } from "@/app/experiments/momentum-conservation/fixtures";
 import { newtonsSecondLawFixtures } from "@/app/experiments/newtons-second-law/fixtures";
@@ -31,6 +32,7 @@ const allFixtures: { [key: string]: MeasurementRow[] } = {
     ...ohmsLawFixtures,
     ...resistorsFixtures,
     ...snellsLawFixtures,
+    ...lawOfReflectionFixtures,
     ...mechanicalEnergyFixtures,
     ...momentumConservationFixtures,
     ...newtonsSecondLawFixtures,
