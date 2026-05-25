@@ -5,28 +5,38 @@ import { sum } from 'mathjs';
 
 const n1 = 1.00029; // Indice di rifrazione dell'aria
 
+function computeCriticalAngle(n2: number, sigma_n2: number): { value: number; sigma: number } | null {
+    if (!isFinite(n2) || n2 <= n1) return null;
+    const toDeg = 180 / Math.PI;
+    const value = Math.asin(n1 / n2) * toDeg;
+    // d(arcsin(n1/n2))/dn2 = -n1 / (n2 * sqrt(n2² - n1²))
+    const sigma = (n1 / (n2 * Math.sqrt(n2 * n2 - n1 * n1))) * sigma_n2 * toDeg;
+    return { value, sigma };
+}
+
 export const snellsLawFormula: Formula = {
     id: 'snells-law',
     title: 'Legge di Snell',
-    description: "Verifica la legge della rifrazione e determina l'indice di rifrazione di un materiale.",
+    description: "Verifica la legge della rifrazione e determina l'indice di rifrazione di un materiale rispetto all'aria, studiando la rifrazione all'interfaccia aria–materiale.",
     category: 'Ottica',
+    customResultRenderer: true,
     getInputs: () => [
-        { 
-            id: 'theta_i', 
-            label: 'Angolo di incidenza (θ₁)', 
+        {
+            id: 'theta_i',
+            label: 'Angolo di incidenza (θ₁)',
             unit: '°',
             help: {
                 title: "Angolo di incidenza (θ₁)",
-                description: "L'angolo tra il raggio di luce in arrivo e la normale (la perpendicolare) alla superficie del materiale. Misuralo con un goniometro."
+                description: "L'angolo tra il raggio di luce in arrivo (nel mezzo dell'aria) e la normale (la perpendicolare) all'interfaccia aria–materiale. Misuralo con un goniometro."
             }
         },
-        { 
-            id: 'theta_r', 
-            label: 'Angolo di rifrazione (θ₂)', 
+        {
+            id: 'theta_r',
+            label: 'Angolo di rifrazione (θ₂)',
             unit: '°',
             help: {
                 title: "Angolo di rifrazione (θ₂)",
-                description: "L'angolo tra il raggio di luce rifratto (che attraversa il materiale) e la normale alla superficie. Misuralo con un goniometro."
+                description: "L'angolo tra il raggio di luce rifratto (che entra nel materiale attraversando l'interfaccia aria–materiale) e la normale alla superficie. Misuralo con un goniometro."
             }
         },
     ],
@@ -64,7 +74,13 @@ export const snellsLawFormula: Formula = {
 
             const { wMean, sigmaWMean } = weightedMean(n2_values, sigmas);
 
-            return { value: wMean, sigma: sigmaWMean, details: { method: "Media dei rapporti" } };
+            const criticalAngle = computeCriticalAngle(wMean, sigmaWMean);
+            return {
+                value: wMean,
+                sigma: sigmaWMean,
+                critical_angle: criticalAngle,
+                details: { method: "Media dei rapporti" }
+            };
         }
 
         // mode 'fit'
@@ -88,7 +104,7 @@ export const snellsLawFormula: Formula = {
         if (sin_theta_i.length < 2 || sin_theta_r.length < 2) {
             return { details: { error: "Dati insufficienti per il fit lineare." } };
         }
-        
+
         // Fit sin(theta_i) = n2/n1 * sin(theta_r)
         // y = sin(theta_i), x = sin(theta_r), slope = n2/n1
         const fit = linearRegression(sin_theta_r, sin_theta_i, sigma_sin_theta_r, true);
@@ -97,9 +113,11 @@ export const snellsLawFormula: Formula = {
         const n2_over_n1 = { value: fit.slope, sigma: fit.sigma_slope };
         const n2 = { value: n2_over_n1.value * n1, sigma: n2_over_n1.sigma * n1 };
 
+        const criticalAngle = computeCriticalAngle(n2.value, n2.sigma);
         return {
             value: n2.value,
             sigma: n2.sigma,
+            critical_angle: criticalAngle,
             details: {
                 n2_over_n1,
                 R2: fit.R2,

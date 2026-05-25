@@ -162,6 +162,58 @@ const CustomUncertaintyMeasurementRenderer = memo(function CustomUncertaintyMeas
 });
 
 
+const CustomLawOfReflectionRenderer = memo(function CustomLawOfReflectionRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
+    const { value, sigma, details } = results;
+    if (value === undefined || value === null) return null;
+
+    const isFit = details?.method === "Fit lineare θᵣ vs θᵢ";
+    const label = isFit ? "Pendenza (m = θᵣ/θᵢ)" : "Differenza media (θᵢ − θᵣ)";
+    const unit = isFit ? "" : "°";
+    const expected = isFit ? "Valore atteso: 1" : "Valore atteso: 0 °";
+
+    return (
+        <div className="space-y-4">
+            <ResultRow htmlLabel={label} value={formatValue(value, sigma)} unit={unit} />
+            <div className="flex justify-end">
+                <span className="text-xs text-muted-foreground italic">{expected}</span>
+            </div>
+            {details?.method && (
+                <div className="flex justify-between items-center pt-4">
+                    <span className="text-sm text-muted-foreground">Metodo di calcolo: {details.method as string}</span>
+                </div>
+            )}
+            {details && details.R2 !== undefined && (
+                <FitDetailsRenderer details={details as Record<string, unknown>} formatValue={formatValue} />
+            )}
+        </div>
+    );
+});
+
+const CustomSnellsLawRenderer = memo(function CustomSnellsLawRenderer({ results, formatValue }: { results: CalculationResult, formatValue: (v?: number, s?: number) => string }) {
+    const { value, sigma, critical_angle, details } = results;
+    if (value === undefined || value === null) return null;
+
+    const relativeUncertainty = value && sigma && value !== 0 ? (Math.abs(sigma / value) * 100).toFixed(1) : "N/D";
+
+    return (
+        <div className="space-y-4">
+            <ResultRow htmlLabel="Indice di rifrazione (n₂)" value={formatValue(value, sigma)} unit="" />
+            <ResultRow label="Incertezza relativa" value={relativeUncertainty !== "N/D" ? `${relativeUncertainty} %` : "N/D"} />
+            {critical_angle && (
+                <ResultRow htmlLabel="Angolo critico (θ<sub>c</sub>)" value={formatValue(critical_angle.value, critical_angle.sigma)} unit="°" />
+            )}
+            {details && details.method && (
+                <div className="flex justify-between items-center pt-4">
+                    <span className="text-sm text-muted-foreground">Metodo di calcolo: {details.method as string}</span>
+                </div>
+            )}
+            {details && (details.R2 !== undefined || details.n2_over_n1) && (
+                <FitDetailsRenderer details={details as Record<string, unknown>} formatValue={formatValue} />
+            )}
+        </div>
+    );
+});
+
 const FitDetailsRenderer = memo(function FitDetailsRenderer({ details, formatValue }: { details: Record<string, unknown>, formatValue: (v?: number, s?: number) => string }) {
     return <div className="mt-6">
         <h4 className="font-semibold mb-2 text-md">Dettagli del Calcolo</h4>
@@ -329,6 +381,10 @@ export function ResultsDisplay({ results, formula, isLoading, experimentName }: 
             return <CustomCompatibilityEvaluationRenderer results={results} formatValue={formatValue} />;
         case 'uncertainty-measurement':
             return <CustomUncertaintyMeasurementRenderer results={results} formatValue={formatValue} />;
+        case 'snells-law':
+            return <CustomSnellsLawRenderer results={results} formatValue={formatValue} />;
+        case 'law-of-reflection':
+            return <CustomLawOfReflectionRenderer results={results} formatValue={formatValue} />;
         default:
             return null;
     }
